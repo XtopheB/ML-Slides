@@ -1,0 +1,360 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken.
+
+\documentclass[xcolor=x11names,compress, aspectratio=169]{beamer}
+%\documentclass[xcolor=x11names,compress, handhouts, aspectratio=169]{beamer}
+%% General document
+\usepackage{graphicx, subfig}
+%% Beamer Layout
+\useoutertheme[subsection=false,shadow]{miniframes}
+\useinnertheme{default}
+\usefonttheme{serif}
+\usepackage{palatino}
+
+%%%%%%% Mes Packages %%%%%%%%%%%%%%%%
+%\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{dsfont} % Pour indicatrice
+\usepackage{url}
+\usepackage{multirow}
+%remove the icon
+\setbeamertemplate{bibliography item}{}
+
+%remove line breaks
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+
+%% ------ MEs couleurs --------
+\definecolor{vert}{rgb}{0.1,0.7,0.2}
+\definecolor{brique}{rgb}{0.7,0.16,0.16}
+\definecolor{gris}{rgb}{0.7, 0.75, 0.71}
+\definecolor{twitterblue}{rgb}{0, 0.42, 0.58}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+\definecolor{siap}{RGB}{3,133, 168}
+
+
+%%%%%%%%%%%%%%%%% BEAMER PACKAGE %%%%%%%
+
+\setbeamerfont{title like}{shape=\scshape}
+\setbeamerfont{frametitle}{shape=\scshape}
+
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{alerted text}{fg=red}
+\setbeamercolor*{example text}{fg=black}
+\setbeamercolor*{structure}{fg=black}
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
+
+\renewcommand{\(}{\begin{columns}}
+\renewcommand{\)}{\end{columns}}
+\newcommand{\<}[1]{\begin{column}{#1}}
+\renewcommand{\>}{\end{column}}
+
+% Path for the graphs
+\graphicspath{{Graphics/}{../../../../Visualisation/Presentations/Graphics/}{../../Visualisation/Presentations/Graphics/}{c:/Gitmain/MLCourse/UNML/Module0/M0_files/figure-html/}  }
+
+%remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+
+% Natbib for clean bibliography
+\usepackage[comma,authoryear]{natbib}
+
+\begin{document}
+
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+
+\hspace{1cm}
+
+\color{brique}{\huge{Statistical learning: \\ \textit{You've seen this before}}}
+
+\hspace{2cm}
+\begin{center}
+
+\includegraphics[height=0.10\textwidth]{SIAP_logo_Big.png}
+
+\end{center}
+
+
+
+\end{frame}
+
+%
+
+%%%  ----------- Dataviz  Definition  -----------%%%
+
+\section{Introduction}
+
+\begin{frame} % Cover slide
+\frametitle{Who is this course for?}
+\pause
+\begin{itemize}[<+->]
+  \item This course is for (present or future) Data Scientists
+  \item This course uses both statistical and computational concepts
+  \item This course uses many applied examples and a very progressive approach
+  \item[]
+\begin{center}
+\emph{Data Scientist: “Person who is better at statistics than any software engineer and better at software than any statistician.” }
+\end{center}
+\scriptsize{J. Wills (2012)}
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{What Is Statistical Learning?}
+\begin{center}
+\emph{`` Statistical learning refers to a vast set of tools for understanding data''}
+{\scriptsize Gareth James,  Daniela Witten, Trevor Hastie ,  Robert Tibshirani (2021)}
+\end{center}
+\begin{itemize}
+ \item<+->[]
+  \item<+->Involves building statistical models
+  \item<+-> Goals are estimation or Prediction
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{What Is Statistical Learning?}
+Two main learning problems:
+\begin{itemize}
+  \item<+->[]We observe \textbf{both} the outcome $y$ and regressors (also called features) $x$s
+   \item<+-> \textbf{Supervised} learning
+  \item<+->[] We \textbf{do not} observe the outcome $y$ but\textbf{ only} several $x$s
+  \item<+-> \textbf{Unsupervised} learning (or \textit{cluster analysis})
+ \end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{Understanding data on an example}
+ \begin{itemize}
+  \item<+->[] \includegraphics[width = 0.7\textwidth]{M0-Scatter-1.png}
+  \item<+->[]  We may be interested in the relationship between the two variables
+ \end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{Understanding = estimate $f(\cdot)$ }
+ \begin{itemize}
+  \item<+->[] \includegraphics[width = 0.7\textwidth]{M0-Scatter-lm-1.png}
+  \item<+->[]  $f(\cdot)$ is the regression line
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{Why estimating $f(\cdot)$ ?}
+ \begin{itemize}
+  \item<+-> Inference
+   \begin{itemize}
+  \item<+->[] Understand the nature of the relationship between $X$ and $Y$
+  \item<+->[] Identify  "important" variables to understand $Y$
+ \end{itemize}
+  \item<+-> Prediction
+   \begin{itemize}
+  \item<+->[] Predict $y$ for any new $x$ using $f(\cdot)$
+ \end{itemize}
+ \item<+-> In practice we must estimate  $f(\cdot)$ using a model:
+ \item<+->[] $$ y = f(x) + \varepsilon $$
+ \item<+->[] We denote by $\widehat{f(\cdot)}$ the estimate of $f(\cdot)$
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{How to estimate $f(\cdot)$?}
+ \begin{itemize}
+  \item<+-> Parametric methods
+   \begin{itemize}
+      \item<+->[] Specify a form for $f(\cdot)$, for example linear
+      \item<+->[] $$y = \beta_0 + \beta_1 x_ + \varepsilon$$
+      \item<+-> The problem is then to estimate $ \beta_0$ and $\beta_1$
+      \item<+-> The goal is to find the line that \textbf{minimize} the distance to the observed points $(x_i, y_i)$
+      \item<+->[] $$Min_{\; (\beta_0 , \beta_1)} \;  \; \; \sum_{i=1}^{n} \bigl(y_i - (\beta_0 + \beta_1 x_i)\bigr)^2$$
+ \end{itemize}
+ \item<+->[] \textbf{NB:} $\sum_{i=1}^{n} \bigl(y_i - (\beta_0 + \beta_1 x_i)\bigr)^2$ is a \textit{cost function} of the parameters $ (\beta_0,\beta_1)$
+ \end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{How to estimate $f(\cdot)$: In practice}
+ \begin{itemize}
+  \item<+->[] \includegraphics[width = 0.7\textwidth]{M0-scatter-Regline-1.png}
+  \item<+->[] Usually, the regression line is found using an OLS procedure
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{Results ($ \widehat{f(\cdot)}$}
+Results:  There is a relation, and it is decreasing. 
+\begin{table}
+\centering
+\begin{tabular}{l|rrrc}
+\hline
+  & Estimate & Std. Error & t value & $Pr(>|t|)$\\
+\hline
+(Intercept) & 1.75 & 0.04 & 41.09 & 0\\
+\hline
+ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
+\hline
+\end{tabular}
+\end{table}
+ The  $R^2$ = 0.478
+
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{What did we learn?}
+ \begin{itemize}
+  \item<+-> Is the line fitting the data?
+   \begin{itemize}
+      \item<+->[] One may always find a relation between two variables
+      \item<+->[] Statistical test help asses the significance of a variable
+  \end{itemize}
+  \item<+-> How good is the linear adjustment: $R^2$
+  \begin{itemize}
+      \item<+->[] $$R^2 = \frac{TSS- RSS}{TSS}$$
+      \item<+->[] with:  $TSS= \sum_{i=1}^n (y_i -\bar{y})^2 $ and $RSS= \sum_{i=1}^n (y_i - \widehat{f}(x_i))^2 $
+ \end{itemize}
+ \item<+-> $R^2$ is a very popular measure but can be very misleading
+ \end{itemize}
+\end{frame}
+
+
+\section{Beware of $R^2$ }
+
+\begin{frame} % Cover slide
+\frametitle{Beware of $R^2$: Anscombe Quartet (1973)}
+\pause
+ \begin{itemize}
+  \item<+->[] \includegraphics[width = 0.5\textwidth]{AnscombeQuartet.png}
+  \item<+->[] In all these data sets the $R^2$ is 0.67
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{Practice of Statistical Learning}
+\begin{center}
+\emph{`` ...make both calculations and graphs. Both sorts of output should be studied; each will contribute to understanding.''}
+\end{center}
+\begin{itemize}
+ \item<+->[]\scriptsize{F. J. Anscombe (1973)}
+ \item<+->[] \scriptsize{See also \href{https://www.r-bloggers.com/2017/05/the-datasaurus-dozen/}{the datasaurus}}
+  \item<+->Practice of Statistical learning can be challenging
+  \item<+->[] Need to compute good indicators
+  \item<+->[] Need to understand the indicators computed
+  \item<+->[] Need to go beyond linearity
+  \item<+->[] Need to see into the darkness of data clouds...
+ \end{itemize}
+\end{frame}
+
+
+\section{Beyond linearity}
+\begin{frame} % Cover slide
+\frametitle{Beyond linearity}
+
+\begin{itemize}
+ \item A non-linear model may be better adapted: \textbf{linear} model
+ \item[]  $$y = \beta_0 + \beta_1 x + \varepsilon$$
+ \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-lmCI-1.png}
+ \item[] and have a better fit: $R^2$= 0.478
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{Beyond linearity}
+
+\begin{itemize}
+ \item A Polynomial model may be better adapted: \textbf{Quadratic} model
+ \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2+ \varepsilon$$
+ \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-poly2-1.png}
+ \item[] and have a better fit: $R^2$= 0.484
+ \end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{Beyond linearity}
+
+\begin{itemize}
+ \item Polynomial may be better adapted: \textbf{Cubic} model
+ \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2 + \beta_3 x^3+ \varepsilon$$
+ \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-poly3-1.png}
+ \item[] Always a better fit: $R^2$= 0.490
+ \end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{In practice}
+
+\begin{itemize}[<+->]
+ \item Polynomial models may be useful
+ \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2 + \cdots + \beta_p x^p + \varepsilon$$
+ \item[] How to choose the degree $p$ ? 
+ \item[] Colinearity of $x^p$ and $x^q$
+ \end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{Parametric vs nonparametric models}
+
+\begin{itemize}[<+->]
+     \item Linear and polynomial models are determined by parameters ($\beta_0, \beta_2, \cdots, \beta_p$)
+     \item Other methods more flexible
+     \begin{itemize}[<+->]
+         \item Nearest neighbors  (or k-NN)
+         \item[] The goal is to estimate $f(\cdot)$ not $\beta_s$!
+         \item[] Similar in spirit form moving average
+         \item[] $$ \widehat{f} (x_i) = \frac{1}{k} \sum_{j \in \, k-nearest\, neighbours \, of \, x_i} $$
+         \item[] $k$ is the number of neighbors of $x_i$ taken into account in estimation.
+     \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+\end{document}
+
+\begin{frame} % Cover slide
+\frametitle{ }
+\pause
+ \begin{itemize}[<+->]
+  \item[]
+  \item
+ \end{itemize}
+\end{frame}
+
+
+
+
+%%%%%%%%%%%%%%% Last Slide %%%%%%%%%%%%%%%%
+
+\begin{frame}[allowframebreaks]%in case more than 1 slide needed
+\frametitle{References}
+    {\footnotesize
+    %\bibliographystyle{authordate1}
+    \bibliographystyle{apalike}
+    \bibliography{../../../Visualisation/Visu}
+    }
+\end{frame}
+\end{document}
+
+%\bibliographystyle{authordate1}
+%\bibliography{c:/Chris/Visualisation/Visu}
+%\end{frame}
