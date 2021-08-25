@@ -198,7 +198,7 @@ Two main learning problems:
 
 \begin{frame} % Cover slide
 \frametitle{Results ($ \widehat{f(\cdot)}$}
-Results:  There is a relation, and it is decreasing. 
+Results:  There is a relation, and it is decreasing.
 \begin{table}
 \centering
 \begin{tabular}{l|rrrc}
@@ -271,7 +271,7 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
  \item A non-linear model may be better adapted: \textbf{linear} model
  \item[]  $$y = \beta_0 + \beta_1 x + \varepsilon$$
  \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-lmCI-1.png}
- \item[] and have a better fit: $R^2$= 0.478
+ \item[] the fit (measured by $R^2$) is: $R^2$= 0.478
  \end{itemize}
 \end{frame}
 
@@ -283,7 +283,7 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
  \item A Polynomial model may be better adapted: \textbf{Quadratic} model
  \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2+ \varepsilon$$
  \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-poly2-1.png}
- \item[] and have a better fit: $R^2$= 0.484
+ \item[] Do we have a better fit? $R^2$= 0.484
  \end{itemize}
 \end{frame}
 
@@ -294,7 +294,7 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
  \item Polynomial may be better adapted: \textbf{Cubic} model
  \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2 + \beta_3 x^3+ \varepsilon$$
  \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-poly3-1.png}
- \item[] Always a better fit: $R^2$= 0.490
+ \item[] Do we have a better fit? $R^2$= 0.490
  \end{itemize}
 \end{frame}
 
@@ -304,12 +304,12 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
 \begin{itemize}[<+->]
  \item Polynomial models may be useful
  \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2 + \cdots + \beta_p x^p + \varepsilon$$
- \item[] How to choose the degree $p$ ? 
- \item[] Colinearity of $x^p$ and $x^q$
+ \item[] How to choose the degree $p$ ?
+ \item[] Colinearity of $x^p$ and $x^q$ for $ p \neq q$? 
  \end{itemize}
 \end{frame}
 
-
+\section{K-NN}
 
 \begin{frame} % Cover slide
 \frametitle{Parametric vs nonparametric models}
@@ -317,17 +317,86 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
 \begin{itemize}[<+->]
      \item Linear and polynomial models are determined by parameters ($\beta_0, \beta_2, \cdots, \beta_p$)
      \item Other methods more flexible
+       \item Nearest neighbors  (or k-NN)
      \begin{itemize}[<+->]
-         \item Nearest neighbors  (or k-NN)
          \item[] The goal is to estimate $f(\cdot)$ not $\beta_s$!
-         \item[] Similar in spirit form moving average
-         \item[] $$ \widehat{f} (x_i) = \frac{1}{k} \sum_{j \in \, k-nearest\, neighbours \, of \, x_i} $$
+         \item[] Similar in spirit to moving average
+         \item[] $$ \widehat{f} (x_i) = \frac{1}{k} \sum_{j \in \, \{ k-nearest\, neighbours \, of \, x_i \} }  y_i$$
          \item[] $k$ is the number of neighbors of $x_i$ taken into account in estimation.
      \end{itemize}
 \end{itemize}
 \end{frame}
 
 
+\begin{frame}
+\frametitle{\textcolor{brique}{ K-NN in practice}}
+\begin{center}
+\begin{itemize}
+   \only<1> {\includegraphics[width = 0.8\textwidth]{k-NN-0.png} \\ }
+   \only<2> {\includegraphics[width = 0.8\textwidth]{k-NN-1.png} \\ }
+   \only<3> {\includegraphics[width = 0.8\textwidth]{k-NN-2.png} \\ }
+   \only<4> {\includegraphics[width = 0.8\textwidth]{k-NN-3.png} \\ }
+   \only<5> {\includegraphics[width = 0.8\textwidth]{k-NN-4.png} \\ }
+   \only<6> {\includegraphics[width = 0.8\textwidth]{k-NN-5.png} \\ }
+   \only<7> {\includegraphics[width = 0.8\textwidth]{k-NN-6.png} \\ }
+\end{itemize}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ K-NN in practice}}
+The overfitting problem: 
+\begin{itemize}
+\item[] 
+   \only<1> {\includegraphics[width = 0.8\textwidth]{k-NN-over.png} \\ }
+   \only<2> {\includegraphics[width = 0.8\textwidth]{k-NN-under.png} \\ }
+   \only<3> {\includegraphics[width = 0.8\textwidth]{k-NN-well.png} \\ }
+   \only<4> {\includegraphics[width = 0.8\textwidth]{k-NN-over.png} \\ }  
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ K-NN in practice}}
+The overfitting problem:
+\begin{itemize}[<+->]
+\item[] \includegraphics[width = 0.5\textwidth]{k-NN-over.png} 
+\item[] Overfitting has many consequences
+\item The estimated curve follows the data too closely
+\item The estimated curve follows the \textbf{errors} too closely
+\item The estimated function will not provide good estimates on \textbf{new observations}
+\end{itemize}
+\end{frame}
+
+
+
+
+\section{Machine learning}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ What learning means?}}
+The goal is to estimate $f(\cdot)$
+\begin{itemize}[<+->]
+\item Many statistical learning methods are relevant and useful to estimate $f(\cdot)$
+\item $f(\cdot)$ can take continuous (regression) or discrete values (classification)
+\item Choosing the best method is difficult
+\item If predicting is the goal, one may focus on prediction accuracy
+\item But predicting is even harder
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ What learning means?}}
+A different approach 
+\begin{itemize}[<+->]
+\item So far, we have estimated $f(\cdot)$ on the whole data set
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets1.png}
+\item A new approach to increase prediction accuracy
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets2.png}
+\end{itemize}
+\end{frame}
 
 \end{document}
 
