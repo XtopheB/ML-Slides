@@ -381,22 +381,89 @@ The goal is to estimate $f(\cdot)$
 \item Many statistical learning methods are relevant and useful to estimate $f(\cdot)$
 \item $f(\cdot)$ can take continuous (regression) or discrete values (classification)
 \item Choosing the best method is difficult
-\item If predicting is the goal, one may focus on prediction accuracy
-\item But predicting is even harder
+\item If predicting is the goal, one may focus on prediction accuracy \textbf{on a test set}
+\item But computing the prediction error is difficult
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}
 \frametitle{\textcolor{brique}{ What learning means?}}
-A different approach 
+The classical approach 
 \begin{itemize}[<+->]
 \item So far, we have estimated $f(\cdot)$ on the whole data set
 \item[] \includegraphics[width = 0.8\textwidth]{ML-Sets1.png}
-\item A new approach to increase prediction accuracy
-\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets2.png}
+\item[] We have estimated $f(\cdot)$ by $\widehat f(\cdot)$  and minimized the Mean Squared Error (MSE)
+\item[] $$ MSE =  \frac{1}{n} \; \sum_ {i=1}^n \bigl( y_i - \widehat f(x_i) \bigr)^2 $$ 
+\item The data serve both for estimating $\widehat f(\cdot)$ and computing the error
+\item This is prone to overfitting
 \end{itemize}
 \end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ What learning means?}}
+A different approach: \textit{resampling}
+\begin{itemize}[<+->]
+\item Our goal is  evaluate the prediction accuracy of $\widehat f(\cdot)$ on a new, \textbf{unseen}, data set 
+\item Since we may not have \textbf{unseen} data, we will construct one
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets4.png}
+\item And the true value of $y_i$ will be available to compute MSE of the prediction
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{Why different sets? }}
+Predicting  using predictions capability
+\begin{itemize}[<+->]
+\item When estimating $f(\cdot)$ on the whole data set, over-fitting may occur
+\item The validation set provides a good way to evaluate the prediction capabilities of a model and the prediction error on a new data set
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets4.png}
+\item Prediction accuracy (using $\widehat f(\cdot)$) is then evaluated on the validation set \textbf{only}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{Constructing (Test-validation) sets}}
+In practice, the validation set is not a block
+\begin{itemize}[<+->]
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets4.png}
+\item The validation set is constructed from a randomly drowned observations.
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets5.png}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{\textit{Many} different sets!  }}
+Using resampling methods to  estimate the error on the prediction
+\begin{itemize}[<+->]
+\item Cross validation is used to select $m$-(training-validation) sets from the original data set (here again randomly)
+\only<1> {\includegraphics[width = 0.8\textwidth]{CV-Sets1.png}}
+\only<2-3> {\includegraphics[width = 0.8\textwidth]{CV-Sets2.png}}
+% \item we can then produce $k$ different situations 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{\textit{Many} different sets!  }}
+\textit{m-fold} Cross-Validation estimates the average prediction error on $m$ different(training-validation) sets
+\begin{itemize}[<+->]
+\item For each training-validation) set $i$, one can compute the $MSE_i$ since the true $y_i$ is known on the validation set! 
+\item Cross Validation error is then: 
+ $$ CV_{(m)}  =  \frac{1}{m} \; \sum_ {i=1}^m   MSE_i$$
+ \item $CV_{(m)}$ is a good estimate of the prediction error of the model 
+ \item  $CV_{(m)} $  can serve to select and compare models (example: select  $k$ in k-NN regression)
+ \item Inpractice $m \in {5, \cdots, 10}$ shows good performances
+\end{itemize}
+\end{frame}
+
+
+
+
 
 \end{document}
 
