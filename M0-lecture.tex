@@ -65,7 +65,7 @@
 \usepackage[comma,authoryear]{natbib}
 
 \begin{document}
-
+%%% Title page %%%%%
 \begin{frame}
 \Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
 
@@ -79,12 +79,9 @@
 \includegraphics[height=0.10\textwidth]{SIAP_logo_Big.png}
 
 \end{center}
-
-
-
 \end{frame}
 
-%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%  ----------- Dataviz  Definition  -----------%%%
 
@@ -107,14 +104,16 @@
 
 \begin{frame} % Cover slide
 \frametitle{What Is Statistical Learning?}
+\pause
+\begin{itemize}[<+->]
+\item[]
 \begin{center}
-\emph{`` Statistical learning refers to a vast set of tools for understanding data''}
+\emph{`` Statistical learning refers to a vast set of tools for understanding data''}\\
+
 {\scriptsize Gareth James,  Daniela Witten, Trevor Hastie ,  Robert Tibshirani (2021)}
 \end{center}
-\begin{itemize}
- \item<+->[]
   \item<+->Involves building statistical models
-  \item<+-> Goals are estimation or Prediction
+  \item<+-> Goals are estimation or prediction
  \end{itemize}
 \end{frame}
 
@@ -122,18 +121,21 @@
 \begin{frame} % Cover slide
 \frametitle{What Is Statistical Learning?}
 Two main learning problems:
-\begin{itemize}
-  \item<+->[]We observe \textbf{both} the outcome $y$ and regressors (also called features) $x$s
-   \item<+-> \textbf{Supervised} learning
-  \item<+->[] We \textbf{do not} observe the outcome $y$ but\textbf{ only} several $x$s
-  \item<+-> \textbf{Unsupervised} learning (or \textit{cluster analysis})
+\pause
+\begin{itemize}[<+->]
+  \item We observe \textbf{both} the outcome $y$ and regressors (also called features) $x$s
+   \item[$\hookrightarrow$] \textbf{Supervised} learning
+   \item[] \textit{Most of the examples and applications are supervised learning}
+   \item We \textbf{do not} observe the outcome $y$ but\textbf{ only} several $x$s
+   \item[$\hookrightarrow$] \textbf{Unsupervised} learning (or \textit{cluster analysis})
+  \item[] \textit{More complex models we'll see at the end}
  \end{itemize}
 \end{frame}
 
 
 
 \begin{frame} % Cover slide
-\frametitle{Understanding data on an example}
+\frametitle{Statistical learning on an example}
  \begin{itemize}
   \item<+->[] \includegraphics[width = 0.7\textwidth]{M0-Scatter-1.png}
   \item<+->[]  We may be interested in the relationship between the two variables
@@ -152,7 +154,7 @@ Two main learning problems:
 
 
 \begin{frame} % Cover slide
-\frametitle{Why estimating $f(\cdot)$ ?}
+\frametitle{Why estimating $f(\cdot)$?}
  \begin{itemize}
   \item<+-> Inference
    \begin{itemize}
@@ -175,14 +177,17 @@ Two main learning problems:
  \begin{itemize}
   \item<+-> Parametric methods
    \begin{itemize}
-      \item<+->[] Specify a form for $f(\cdot)$, for example linear
+      \item<+->[] Specify a form for $f(\cdot)$, for example linear:
       \item<+->[] $$y = \beta_0 + \beta_1 x_ + \varepsilon$$
-      \item<+-> The problem is then to estimate $ \beta_0$ and $\beta_1$
-      \item<+-> The goal is to find the line that \textbf{minimize} the distance to the observed points $(x_i, y_i)$
-      \item<+->[] $$Min_{\; (\beta_0 , \beta_1)} \;  \; \; \sum_{i=1}^{n} \bigl(y_i - (\beta_0 + \beta_1 x_i)\bigr)^2$$
+      %\item<+-> The problem is then to estimate $ \beta_0$ and $\beta_1 \; \hookrightarrow $ ($\widehat \beta_0, \widehat \beta_1$  are the estimates)
+      \item<+-> The goal is to find the line that is  \textbf{minimizing} the distance to the observed points $(x_i, y_i)$.
+                The distance is computed as the Mean Square Error (MSE): $$ MSE(\beta_0, \beta_1) = \frac{1}{n} \sum_{i=1}^{n} \bigl(y_i - (\beta_0 + \beta_1 x_i)\bigr)^2 $$
+      \item<+-> The regression line, defined by $\beta_0$ and $\beta_1$,  is simply the solution of:
+       $$Min_{\; (\beta_0 , \beta_1)} \; MSE(\beta_0, \beta_1) $$
+   \end{itemize}
+  \item<+->  The MSE it is the \textit{cost function} used to estimate $ (\widehat \beta_0, \widehat \beta_1)$
  \end{itemize}
- \item<+->[] \textbf{NB:} $\sum_{i=1}^{n} \bigl(y_i - (\beta_0 + \beta_1 x_i)\bigr)^2$ is a \textit{cost function} of the parameters $ (\beta_0,\beta_1)$
- \end{itemize}
+
 \end{frame}
 
 
@@ -191,14 +196,14 @@ Two main learning problems:
 \frametitle{How to estimate $f(\cdot)$: In practice}
  \begin{itemize}
   \item<+->[] \includegraphics[width = 0.7\textwidth]{M0-scatter-Regline-1.png}
-  \item<+->[] Usually, the regression line is found using an OLS procedure
+  \item<+->[] The regression line is found by minimizing the sum of all distances or \textbf{MSE}
  \end{itemize}
 \end{frame}
 
 
 \begin{frame} % Cover slide
-\frametitle{Results ($ \widehat{f(\cdot)}$}
-Results:  There is a relation, and it is decreasing.
+\frametitle{Results: $ \widehat{f(\cdot)}$}
+From the result and the estimated  parameters $ (\widehat \beta_0, \widehat \beta_1)$, we see that there is a relation, and that it is decreasing.
 \begin{table}
 \centering
 \begin{tabular}{l|rrrc}
@@ -207,11 +212,11 @@ Results:  There is a relation, and it is decreasing.
 \hline
 (Intercept) & 1.75 & 0.04 & 41.09 & 0\\
 \hline
-ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
+ltexp &\textbf{ $-0.20^{***}$ }& 0.01 & -31.84 & 0\\
 \hline
 \end{tabular}
 \end{table}
- The  $R^2$ = 0.478
+ The quality of the adjustment may be measured by the $R^2$ = 0.478
 
 \end{frame}
 
@@ -229,18 +234,18 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
       \item<+->[] $$R^2 = \frac{TSS- RSS}{TSS}$$
       \item<+->[] with:  $TSS= \sum_{i=1}^n (y_i -\bar{y})^2 $ and $RSS= \sum_{i=1}^n (y_i - \widehat{f}(x_i))^2 $
  \end{itemize}
- \item<+-> $R^2$ is a very popular measure but can be very misleading
+ \item<+-> $R^2$ is a very popular measure. The closer to 1, the better.
+ \item<+->  $R^2$  can be very misleading
  \end{itemize}
 \end{frame}
 
 
-\section{Beware of $R^2$ }
 
 \begin{frame} % Cover slide
 \frametitle{Beware of $R^2$: Anscombe Quartet (1973)}
 \pause
  \begin{itemize}
-  \item<+->[] \includegraphics[width = 0.5\textwidth]{AnscombeQuartet.png}
+  \item<+->[] \includegraphics[width = 0.6\textwidth]{AnscombeQuartet.png}
   \item<+->[] In all these data sets the $R^2$ is 0.67
  \end{itemize}
 \end{frame}
@@ -255,23 +260,44 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
  \item<+->[]\scriptsize{F. J. Anscombe (1973)}
  \item<+->[] \scriptsize{See also \href{https://www.r-bloggers.com/2017/05/the-datasaurus-dozen/}{the datasaurus}}
   \item<+->Practice of Statistical learning can be challenging
-  \item<+->[] Need to compute good indicators
-  \item<+->[] Need to understand the indicators computed
-  \item<+->[] Need to go beyond linearity
-  \item<+->[] Need to see into the darkness of data clouds...
+  \item<+->[$\hookrightarrow$] Need to compute good indicators
+  \item<+->[$\hookrightarrow$] Need to understand the indicators computed
+  \item<+->[$\hookrightarrow$] Need to go beyond linearity
+ % \item<+->[$\hookrightarrow$] Need to see into the darkness of data clouds...
  \end{itemize}
 \end{frame}
+
+
+%%% Title page %%%%%
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+
+\hspace{1cm}
+
+\color{brique}{\huge{Statistical learning: \\ \textit{Beyond linearity}}}
+
+\hspace{2cm}
+\begin{center}
+
+\includegraphics[height=0.10\textwidth]{SIAP_logo_Big.png}
+
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 
 \section{Beyond linearity}
 \begin{frame} % Cover slide
 \frametitle{Beyond linearity}
-
+\pause
 \begin{itemize}
- \item A non-linear model may be better adapted: \textbf{linear} model
- \item[]  $$y = \beta_0 + \beta_1 x + \varepsilon$$
+ \item A linear model may be unadapted or too simple
+ \item[]  $$y = \beta_0 + \beta_1 x^{} + \varepsilon$$
  \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-lmCI-1.png}
- \item[] the fit (measured by $R^2$) is: $R^2$= 0.478
+ \item[] The fit (measured by $R^2$) is: $R^2$= 0.478
  \end{itemize}
 \end{frame}
 
@@ -305,7 +331,7 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
  \item Polynomial models may be useful
  \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2 + \cdots + \beta_p x^p + \varepsilon$$
  \item[] How to choose the degree $p$ ?
- \item[] Colinearity of $x^p$ and $x^q$ for $ p \neq q$? 
+ \item[] Collinearity of $x^p$ and $x^q$ for $ p \neq q$?
  \end{itemize}
 \end{frame}
 
@@ -321,8 +347,10 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
      \begin{itemize}[<+->]
          \item[] The goal is to estimate $f(\cdot)$ not $\beta_s$!
          \item[] Similar in spirit to moving average
-         \item[] $$ \widehat{f} (x_i) = \frac{1}{k} \sum_{j \in \, \{ k-nearest\, neighbours \, of \, x_i \} }  y_i$$
-         \item[] $k$ is the number of neighbors of $x_i$ taken into account in estimation.
+         \item[] $$ \widehat{f} (x_i) = \frac{1}{k} \sum_{\substack{j \in \{ k-nearest \\ \; neighbours \, of \, x_i \} }}  y_j$$
+         \item[] $k$ is the number of neighbors of $x_i$ taken into account in the estimation.
+         \item The method follows a very general idea:
+         \item[]  "\emph{Observations close in the $x$ dimension should be close in the $y$ dimension}"  
      \end{itemize}
 \end{itemize}
 \end{frame}
@@ -344,23 +372,21 @@ ltexp & $-0.20^{***}$ & 0.01 & -31.84 & 0\\
 \end{frame}
 
 \begin{frame}
-\frametitle{\textcolor{brique}{ K-NN in practice}}
-The overfitting problem: 
+\frametitle{\textcolor{brique}{ K-NN in practice: \textbf{Choosing k}}}
 \begin{itemize}
-\item[] 
+\item[]
    \only<1> {\includegraphics[width = 0.8\textwidth]{k-NN-over.png} \\ }
    \only<2> {\includegraphics[width = 0.8\textwidth]{k-NN-under.png} \\ }
    \only<3> {\includegraphics[width = 0.8\textwidth]{k-NN-well.png} \\ }
-   \only<4> {\includegraphics[width = 0.8\textwidth]{k-NN-over.png} \\ }  
+   \only<4> {\includegraphics[width = 0.8\textwidth]{k-NN-over.png} \\ }
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{\textcolor{brique}{ K-NN in practice}}
-The overfitting problem:
+\frametitle{\textcolor{brique}{ K-NN in practice: \textbf{Overfitting}}}
 \begin{itemize}[<+->]
-\item[] \includegraphics[width = 0.5\textwidth]{k-NN-over.png} 
+\item[] \includegraphics[width = 0.5\textwidth]{k-NN-over.png}
 \item[] Overfitting has many consequences
 \item The estimated curve follows the data too closely
 \item The estimated curve follows the \textbf{errors} too closely
@@ -369,7 +395,23 @@ The overfitting problem:
 \end{frame}
 
 
+%%% Title page %%%%%
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
 
+\hspace{1cm}
+
+\color{brique}{\huge{Statistical learning: \\ \textit{vs} Machine Learning }}
+
+\hspace{2cm}
+\begin{center}
+
+\includegraphics[height=0.10\textwidth]{SIAP_logo_Big.png}
+
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Machine learning}
 
@@ -380,23 +422,27 @@ The goal is to estimate $f(\cdot)$
 \begin{itemize}[<+->]
 \item Many statistical learning methods are relevant and useful to estimate $f(\cdot)$
 \item $f(\cdot)$ can take continuous (regression) or discrete values (classification)
-\item Choosing the best method is difficult
-\item If predicting is the goal, one may focus on prediction accuracy \textbf{on a test set}
-\item But computing the prediction error is difficult
+%\item Choosing the best method is difficult
+\item If predicting is the goal, one may focus on prediction accuracy
+\item[] $\hookrightarrow $ this is the goal of \textbf{Machine Learning }
+\item If the goal is to formalize a model, one may focus on testing statistical properties
+\item[] $\hookrightarrow $ this is the goal of \textbf{Statistical Learning }
+\item In practice we'll use both tools to  "\emph{understand the data}"
+
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}
 \frametitle{\textcolor{brique}{ What learning means?}}
-The classical approach 
+The classical approach
 \begin{itemize}[<+->]
 \item So far, we have estimated $f(\cdot)$ on the whole data set
 \item[] \includegraphics[width = 0.8\textwidth]{ML-Sets1.png}
-\item[] We have estimated $f(\cdot)$ by $\widehat f(\cdot)$  and minimized the Mean Squared Error (MSE)
-\item[] $$ MSE =  \frac{1}{n} \; \sum_ {i=1}^n \bigl( y_i - \widehat f(x_i) \bigr)^2 $$ 
-\item The data serve both for estimating $\widehat f(\cdot)$ and computing the error
-\item This is prone to overfitting
+\item We have estimated $f(\cdot)$ by $\widehat f(\cdot)$  and minimized some cost function such as the
+$ MSE =  \frac{1}{n} \; \sum_ {i=1}^n \bigl( y_i - \widehat f(x_i) \bigr)^2 $
+\item The data serve both for estimating $\widehat f(\cdot)$ and computing the prediction error
+%\item This is prone to overfitting
 \end{itemize}
 \end{frame}
 
@@ -405,7 +451,7 @@ The classical approach
 \frametitle{\textcolor{brique}{ What learning means?}}
 A different approach: \textit{resampling}
 \begin{itemize}[<+->]
-\item Our goal is  evaluate the prediction accuracy of $\widehat f(\cdot)$ on a new, \textbf{unseen}, data set 
+\item Our goal is  evaluate the prediction accuracy of $\widehat f(\cdot)$ on a new, \textbf{unseen}, data set
 \item Since we may not have \textbf{unseen} data, we will construct one
 \item[] \includegraphics[width = 0.8\textwidth]{ML-Sets4.png}
 \item And the true value of $y_i$ will be available to compute MSE of the prediction
@@ -427,11 +473,11 @@ Predicting  using predictions capability
 
 
 \begin{frame}
-\frametitle{\textcolor{brique}{Constructing (Test-validation) sets}}
+\frametitle{\textcolor{brique}{Constructing training \& validation sets}}
 In practice, the validation set is not a block
 \begin{itemize}[<+->]
 \item[] \includegraphics[width = 0.8\textwidth]{ML-Sets4.png}
-\item The validation set is constructed from a randomly drowned observations.
+\item The validation set is constructed from a randomly drawn observations.
 \item[] \includegraphics[width = 0.8\textwidth]{ML-Sets5.png}
 \end{itemize}
 \end{frame}
@@ -444,23 +490,55 @@ Using resampling methods to  estimate the error on the prediction
 \item Cross validation is used to select $m$-(training-validation) sets from the original data set (here again randomly)
 \only<1> {\includegraphics[width = 0.8\textwidth]{CV-Sets1.png}}
 \only<2-3> {\includegraphics[width = 0.8\textwidth]{CV-Sets2.png}}
-% \item we can then produce $k$ different situations 
+% \item we can then produce $k$ different situations
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{\textcolor{brique}{\textit{Many} different sets!  }}
 \textit{m-fold} Cross-Validation estimates the average prediction error on $m$ different(training-validation) sets
+\pause
 \begin{itemize}[<+->]
-\item For each training-validation) set $i$, one can compute the $MSE_i$ since the true $y_i$ is known on the validation set! 
-\item Cross Validation error is then: 
+\item For each training-validation) set $i$, one can compute the $MSE_i$ since the true $y_i$ is known on the validation set!
+\item Cross Validation error is then:
  $$ CV_{(m)}  =  \frac{1}{m} \; \sum_ {i=1}^m   MSE_i$$
- \item $CV_{(m)}$ is a good estimate of the prediction error of the model 
+ \item $CV_{(m)}$ is a good estimate of the prediction error of the model
  \item  $CV_{(m)} $  can serve to select and compare models (example: select  $k$ in k-NN regression)
- \item Inpractice $m \in {5, \cdots, 10}$ shows good performances
+ \item In practice $m \in {5, \cdots, 10}$ shows good performances
 \end{itemize}
 \end{frame}
 
+\section{Machine Learning project}
+
+
+
+\section{Wrap-up}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ Tasks for Machine Learning }}
+Machine Learning involves several tasks, some are time consuming
+\pause
+\begin{itemize}[<+->]
+    \item Data collection (not treated here)
+    \item Data organization (not treated here)
+    \item Data cleaning (not treated here)
+    \item Data visualization
+    \item Data analysis $ \leftarrow $ this is the core of this course
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ Wrap-up }}
+\pause
+\begin{itemize}[<+->]
+%\item Machine Learning builds upon "classical" statistics
+\item To understand the data, we can go beyond linearity using polynomial or nonparametric model ($k$-NN)
+\item More complex models allow for more accuracy, but introduce variance in the estimation
+\item  There is a unavoidable  \textbf{bias-variance} trade-off
+\item Theory helps understanding but not choosing the right model
+\item The train $+$ validation sets approach is central in machine learning% The only one that helps in practice
+\end{itemize}
+\end{frame}
 
 
 
@@ -473,11 +551,8 @@ Using resampling methods to  estimate the error on the prediction
  \begin{itemize}[<+->]
   \item[]
   \item
- \end{itemize}
+\end{itemize}
 \end{frame}
-
-
-
 
 %%%%%%%%%%%%%%% Last Slide %%%%%%%%%%%%%%%%
 
