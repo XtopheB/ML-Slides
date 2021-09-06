@@ -1,0 +1,902 @@
+---
+title: "Simple Supervized Classification"
+subtitle: "Some useul concepts"
+author: 
+- Christophe Bontemps & Patrick Jonsson - SIAP
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    keep_md: yes
+    code_folding: show
+    fig_width: 6.5
+    fig_height: 4
+  pdf_document:
+    df_print: kable
+    toc: yes
+    keep_tex: yes
+    fig_width: 6.5
+    fig_height: 4
+    extra_dependencies: ["float"]
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r Knitr_Global_Options, include=FALSE, cache=FALSE}
+library(knitr)
+opts_chunk$set(warning = FALSE, message = FALSE, 
+               fig.pos = "!H", fig.align = "center",
+               autodep = TRUE, tidy = FALSE, cache = TRUE)
+#opts_chunk$set(cache.rebuild=TRUE) 
+```
+
+`r if(knitr:::pandoc_to() == "latex") {paste("\\large")}` 
+
+
+```{r Libraries, echo=FALSE}
+library(plyr)
+library(dplyr)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(caret)
+library(rpart)
+library(ISLR)
+library(parallel)
+library(doSNOW)
+library(ModelMetrics)
+library(AppliedPredictiveModeling)
+library(MLeval)
+library(RColorBrewer)
+library(klaR)
+```
+
+
+
+Supervised classification aims at explaining a binary variable $y$ (sucess/failure) by covariates $x$, say the probability of rural (of repayment of a loan) by some explanatory variables (income, ...). A classifier tells us if we predict success or failure given the covariates.
+
+We will look at some simple models of classification, as well the many dimensions that we can use to evaluate a classifier.
+
+In statistics, we often denote $y$ as 1 or -1 (positive or negative) (we could change this to 1 and 0 but the former will be handy). So a classifier is
+\[
+\widehat{f} (x) = 1 \ \mbox{ or } -1
+\, .
+\]
+
+Here is a *twoClass Dataset*: We have two predictors, *Education* and *Income*, and the dependent variable is whether the household is living in a *rural* or *urban* environment.
+
+```{r}
+data(twoClassData)
+names(predictors) <- c("Education", "Income")
+levels(classes)[levels(classes)=="Class1"] <- "Urban"
+levels(classes)[levels(classes)=="Class2"] <-  "Rural"
+twoClass <- data.frame(predictors,classes)
+twoClass$classes <- relevel(twoClass$classes, ref="Urban")
+
+twoClassColor <- brewer.pal(3,'Set2')[2:1]
+names(twoClassColor) <- c('Urban','Rural')
+```
+
+
+```{r}
+summary(twoClass$classes)
+```
+
+
+```{r univariatefig}
+# univariate plot 
+ggplot(data = twoClass,aes(x = Education, y= 1)) + 
+  geom_point(aes(color = classes), size = 2, alpha = .5) +
+  scale_colour_manual(name = 'classes', 
+                      values = twoClassColor) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0))+
+  theme_minimal()+ 
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+```
+
+
+Note that we have defined *Urban* as being the first class, but we may want to change this along the way.
+
+```{r bivariatefig}
+ggplot(data = twoClass,aes(x = Education, y = Income)) + 
+  geom_point(aes(color = classes), size = 1, alpha = .5) +
+  scale_colour_manual(name = 'classes', 
+                      values = twoClassColor) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0))+
+  theme_minimal()
+```
+
+```{r NicePlotsCode, echo=FALSE}
+## This is not useful for you
+nbp <- 250
+PredA <- seq(min(twoClass$Education), max(twoClass$Education),
+             length = nbp)
+PredB <- seq(min(twoClass$Income), max(twoClass$Income), 
+             length = nbp)
+Grid <- expand.grid(Education = PredA, Income = PredB)
+PlotGrid <- function(pred,title) {
+  surf <- (ggplot(data = twoClass, 
+                  aes(x = Education, y = Income, 
+                      color = classes)) +
+             geom_tile(data = cbind(Grid, classes = pred),
+                       aes(fill = classes)) +
+             scale_fill_manual(name = 'classes', 
+                               values = twoClassColor) +
+             ggtitle("Decision region") + 
+             theme(legend.text = element_text(size = 10), 
+                   legend.position="bottom") +
+             scale_colour_manual(name = 'classes', 
+                                 values = twoClassColor)) +
+    scale_x_continuous(expand = c(0,0)) +
+    scale_y_continuous(expand = c(0,0))
+  pts <- (ggplot(data = twoClass, 
+                 aes(x = Education, y = Income,
+                 color = classes)) +
+            geom_contour(data = cbind(Grid, classes = pred),
+                         aes(z = as.numeric(classes)), 
+                         color = "red", breaks = c(1.5)) +
+            geom_point(size = 1, alpha = .5) + 
+            ggtitle("Decision boundary") +
+            scale_colour_manual(name = 'classes', 
+                                values = twoClassColor)) +
+            theme_minimal() +
+            theme(legend.position="bottom") +
+    scale_x_continuous(expand = c(0,0)) +
+    scale_y_continuous(expand = c(0,0))
+  grid.arrange(surf, pts, 
+               top = grid::textGrob(title, 
+                                    gp = grid::gpar(fontsize = 10)), 
+               ncol = 2)
+
+
+}
+```
+
+# Logit as You Don't Know It
+
+Let's begin with the simple logit model. This means we model
+\[
+\Pr \left( y = 1\right) = F( x'\beta) = \frac{1}{1+\exp(-x'\beta)}
+\, ,
+\]
+where $F(\cdot)$ is the cdf of the logistic distribution. We assume that an intercept is included in $x$.
+
+```{r Logistic0}
+TrControl <- trainControl(method = "none",
+                          classProbs=TRUE, 
+                          savePredictions = TRUE)
+Logit <- train(classes ~ . , data = twoClass, 
+               method = "glm",
+               preProcess = c("center"),
+               trControl = TrControl)
+summary(Logit)
+```
+
+Estimation relies on maximum likelihood. 
+Predicted probabilities have the form
+\[
+\widehat{p}_{i} = \frac{e^{x_{i}'\widehat{\beta}}}{1+e^{x_{i}'\widehat{\beta}}}
+\
+, .
+\]
+It is not difficult to show that
+\[
+\log \frac{\widehat{p}_{i}}{1-\widehat{p}_{i}} = x_{i}'\widehat{\beta}
+\, .
+\]
+The quantity $\frac{\widehat{p}_{i}}{1-\widehat{p}_{i}}$ is called the *odds*, it varies between 0 and $\infty$ and indicate very low or very high probability of rural. Logit  models  *log odds* as linear in $x$. 
+
+For classification, we want to predict values of $y$. So we decide that
+\[
+\widehat{y}_{i} = 1 \Leftrightarrow \widehat{p}_{i}  > t
+\qquad \widehat{y}_{i} = -1 \Leftrightarrow \widehat{p}_{i}  \leq  t
+\, .
+\]
+The most common choice for the "cutoff" or threshold probability is  $t=50\%$. Now because log-odds are
+increasing in $p$, if $t=1/2$, it means that
+\[
+\widehat{y}_{i} = 1 \Leftrightarrow x_{i}'\widehat{\beta}  > 0
+\qquad \widehat{y}_{i} = -1 \Leftrightarrow  x_{i}'\widehat{\beta}  \leq 0
+\, .
+\]
+The classifier then depends simply on the linear combination of the $x$'s.
+
+For any threshold $t$, not necessarily equal to $1/2$, the classifier still depends on a linear combination of $x$ (where the intercept is changed). 
+
+```{r Logit_Frontier, echo=FALSE}
+PlotGrid(predict(Logit, newdata = Grid), "Logit" )
+```
+
+# Measures of Fit in Classification
+
+There are many ways to define the risk in classification.
+
+## Accuracy
+In supervised classification with a binary dependent $y$, an often used criterion is  *accuracy*
+\[
+\Pr \left[ y_0  = \widehat{f}(x_0) \right] = 
+E \left[ 1 \left( y_0  = \widehat{f}(x_0) \right) \right]
+\]
+where $\widehat{f}(\cdot)$ is the classifier. We want the *maximum* possible accuracy.
+Sometimes tranformed as *minimum* of *error rate* or *misclassification rate*
+\[
+\Pr \left[ y_0  \neq \widehat{f}(x_0) \right] = 
+E \ 1(y_0  \neq \widehat{f}(x_0))
+\, .
+\]
+
+## Confusion Matrix
+
+The confusion matrix is
+```{r Cmatrix}
+Pred <- predict(Logit, newdata = twoClass)
+confusion <- caret::confusionMatrix(data = Pred, 
+                       reference = classes,
+                       positive = "Rural",
+                       mode = "sens_spec")
+
+confusion$table
+
+```
+From this table, we can compute the accuracy of the prediction which is here: 
+```{r}
+#confusion$overall[1]
+
+accuracy <- (confusion$table[1] + confusion$table[4])/ nrow(twoClass)
+accuracy
+```
+
+But there are other, more relevant  elements we can compute from this confusion table such as the specificity and sensitivity. 
+
+```{r}
+t(cbind(t(confusion$byClass[1:2]), t(confusion$overall[1:2]))) %>%
+  kable(, digit=2) 
+
+```
+
+ 
+
+
+# Evaluation metrics: Specificity, Sensitivity & Kappa indicators
+
+When evaluating prediction there are several metrics that should be taken into account. All of them are retrieved from the confusion matrix 
+
+!["Elements of a confusion matrix"](https://www.researchgate.net/publication/273363742/figure/fig4/AS:667598647730193@1536179329823/A-simple-confusion-matrix-a-two-by-two-table-values-in-the-main-diagonal-TP-and-TN.png)]
+
+
+The simplest one being accuracy which corresponds to the fraction of prediction that we classified correctly using our model. In the case of binary classification this will be:
+
+$$ Acuracy = \frac{True Positives + True Negatives}{ True Positives + True Negatives + False Positives + False Negatives} \\
+\;\\
+ =  \frac{True Positives + True Negatives}{N} 
+$$
+
+
+As mentioned before accuracy does not work as well when there is heavy imbalance between classes. If 90% of the data corresponds to one class, then you can reach 90% accuracy by simply guessing that class for all observations in the data. **Accuracy** also does not give information about what type of mistake you are making, which can be important if one mistake is more costly to make than the other.
+
+To avoid the downsides of accuracy there are alternative metrics such as , **Sensitivity**,  **Specificity** and **Kappa** whcih can be used instead:
+
+
+$$ Sensitivity = \frac{True Positives}{True Positives + False Negatives}$$
+In our case **Sensitivity** will correspond to how many of the observations we are able to classify in our reference class (Rural) out of all the observations that were married before the age of 15.
+
+
+$$ Specificity = \frac{True Negatives}{True Negatives + False Positives}$$
+Whereas **specificity** corresponds to the fraction of observations who where correctly classified as unmarried before the age of 15, out of all the observations that weren't marriage before the age of 15.
+
+> TBRevised 
+
+Finally **Kappa** is similar to the classic accuracy measure, but it is able to take into consideration the data sets class imbalance.
+
+$$ \kappa = \frac{p_o-p_e}{1-p_e}  $$
+
+
+For binary classification **Kappa** can be rewritten as an expression of True Positives (TP), False Negatives (FN), False Negatives (FN), and False Positives (FP):
+
+$$ \kappa = \frac{2(TP \cdot TN - FN \cdot FP)}{(TP + FP) \cdot (FP + TN)+ (TP+FN) \cdot (FN + TN)} $$
+
+where $p_o$ is the accuracy of the model, and $p_e$ is the measure of the agreement between the model predictions and the actual class values as if happening by chance. The *Kappa* value indicates how much better the model is performing compared to a different model that makes random classifications based on the distribution of the target variable.
+
+
+
+
+
+## Limitations of Accuracy
+
++ No difference between the different types of error: costs of different mistakes can be very different.
++ One must consider the natural frequencies of each class: if rural was very rare event, we could always reach almost perfect accuracy by always predicting no rural. So we want to compare accuracy to the *prevalence rate*.
+
+Here the overall probability or *prevalence rate* is 
+$\widehat{p}= 97/(111+97) = 0.466$. So using a threshold of $1/2$, we predict in the sample that no one is  rural, so the *no-information accuracy rate* is indeed 0.53.
+
+A common problem in classification is that if a class has a low probability (*severe imbalance*), then a classifier that never predicts this class has a low probability of misclassification: if there is only 1 percent of positive, then a classifier that never predict positive is wrong only 1 percent of the time! 
+
+Some criterion are more robust to severe imbalance than others. Accuracy is definitely not, neither is AUC (see below). Some possible solutions:
+
+  + Let the threshold of the classifier vary: instead of $1/2$, use   another one. Then the threshold becomes a parameter to be chosen by, say, some cross-validation procedure. See Section 13.8 of the Caret   documentation.
+  + Give different weights to different kind of errors (false positive and false negative). Caret allows to define some taylored criterion.
+
+Another issue with class imbalance is that splitting a sample may yield a subsample with no observations in some class. Use **createDataPartition**
+to create balanced splits of the data. If the $y$ argument to this function is a factor, the random sampling occurs within each class and should preserve the overall class distribution of the data.
+For K-fold CV, use **createFolds** or **createMultiFolds**.  See a later chapter for more. 
+
+
+## Kappa
+
+A statistic that accounts for the distribution between classes is *Kappa*^[Cohen, Jacob (1960). "A coefficient of agreement for nominal scales". Educational and Psychological Measurement. 20 (1): 37–46. doi:10.1177/001316446002000104.] 
+\[
+\kappa
+ = \frac{O - E}{1 - E}
+ \qquad O = \mbox{observed accuracy} \qquad E = \mbox{expected accuracy based on no information}
+ \  .
+\]
+$\kappa$ measures the agreement between two raters, one using the model and the others using no information predicted probability.
+
+How is $E$ computed? Since the non-information rate is 0.53,  we would classify each individual as rural with a probability of 0.53. What is the accuracy of such a procedure? 
+
++ Probability of predicting rural correctly is
+$0.47^2= 0.22$.
++ Probability of prediction Urban correctly is
+$(1-0.47)^2 = 0.28$. 
++ Totat expected accuracy is $E = 0.5$.
++ Hence 
+\[
+\kappa
+ = \frac{0.75 - 0.5}{1 - 0.5} = 0.5
+\  .
+\]
++ $\kappa$ can take values between -1 and 1, but in practice is between 0 and 1, since we expect $O>E$. The larger $\kappa$ is, the better the model compared to expected accuracy using non-information predicted probability.
++ Depending on whether classes are evenly distributed,  $\kappa$ can be moderate or high.
++ If expected accuracy is $1/2$ as here, then $\kappa = 2 O -1$, sp there is no difference in ranking using $\kappa$ or observed accuracy.
++ If accuracy is high, say 90%, but expected accuracy is also high, say 85%, $\kappa$ show moderate agreement, here $1/3$.
+
+## Sensitivity and Specificity
+
+```{r}
+caret::confusionMatrix(data = Pred, 
+                       reference = classes,
+                       positive = "Rural",
+                       mode = "sens_spec")
+```
+
+
+The positive class is *Rural*. The confusion matrix counts
+
++  True Positives (Row 2, Column 2, here 69)
++  False Positives (Row 2, Column 1, here 24)
++  False Negatives (Row 1, Column 2, here 28)
++  True Negatives (Row 1, Column 1, here 87)
+
+
+As with any test, we can look at different measures of interest:
+
++ Sensitivity = True Positive Rate = True Positives / Total Positives :  think about power of a test. 
+It is also called *Recall*.
+\[
+Sensitivity= \frac{69}{69+28}= 0.71
+\, .
+\]
+
++ False Positive Rate = False Positives / Total Negatives : 
+think about Type-I error in a test
+\[
+FPR= \frac{24}{24+87}= 0.22
+\, .
+\]
+
++ Specificity = 1 - False Positive Rate 
+(how frequently you declare negative a negative individual). Here it is 0.78.
+Specificity is also = True Negative Rate
+
+
+One can think of sensitivity and specificity as conditional probabilities. Sensitivity is accuracy restricted to the  positives. Specificity is accuracy restricted to the negatives.
+
+Sensitivity and specificity are properties of the test itself. How the test performs in a given population is also depending on *prevalence*, that is the proportion of positive individuals in the population. 
+
+
+
++ Precision = True Positive / Total Predicted Positive =
+TP/(TP + FP). Here *Positive Pred Value*.
+\[
+Precision = \frac{69}{69+24} =0.74
+\, .
+\]
+
++ False Discovery Rate  =  1 - Precision. Here 0.26.
+
+For a more in depth discussion of these concepts, see the post by Nina Zummel^[https://win-vector.com/2009/11/03/i-dont-think-that-means-what-you-think-it-means-statistics-to-english-translation-part-1-accuracy-measures/#wikiSS].
+
+
+## Receiving Operating Characteristic (ROC) Curve
+
+By varying the threshold (usual at 1/2) we can make sensitivity and specificity vary. The ROC curve is based on predicted probabilities and show how both vary when we vary the threshold.
+
+
+```{r}
+library(pROC)
+pprob <- predict(Logit, twoClass, type = "prob")
+twoclassesROC <- roc(twoClass$classes,
+                     pprob[,"Rural"])
+### Note the x-axis is reversed
+plot(twoclassesROC, print.auc = TRUE, 
+     auc.polygon = TRUE)
+# To see how this curve is constructed check coords(twoclassesROC, "all")
+```
+
+The AUC (area under the curve) is a measure of fit: Since we would like Specificity and Sensitivity to be 1 for any threshold, the ideal curve has AUC=1.
+
+One could try to choose another threshold than 1/2, that would improve specificity or sensitivity. But when one increases, the other one automatically decreases. So we would like either for an optimal 
+
+
+```{r}
+plot(twoclassesROC, print.thres="best",
+     print.thres.best.method="youden",
+     print.thres.cex=.8)
+plot(twoclassesROC, print.thres="best",
+     print.thres.best.method="closest.topleft",
+     print.thres.cex=.8)
+```
+
+Youden's J statistic^[W. J. Youden (1950) “Index for rating diagnostic tests”. Cancer, 3, 32–35.] is
+\[
+J = sensitity + specificity -1
+\, .
+\]
+The optimal cut-off is the threshold that maximizes $J$, or maximizes the distance to the diagonal line. 
+
+Alternatively, the optimal threshold can be chosen as the point closest to the top-left part of the plot with perfect sensitivity or specificity. 
+
+
+## Cost-Based Criteria
+
+The classification is often used to take a decision, because the household to likely to rural. The cost of false positives and false negatives are different here. False positives are households that are classified (predicted) as rural   but are Urban. These housholds may leave the bank. False negatives are housholds that are given a credit but will rural. So we likely want to balance the possible costs of false positives and false negatives. Let's imagine that a false negative is 3 times more costly to the bank than a false positive. We can supply  best.weights arguments, that define
+
+1. the relative cost of of a false negative classification (as compared with a false positive classification)
+2. the prevalence, or the proportion of cases in the population.
+
+
+```{r}
+plot(twoclassesROC, print.thres="best",
+     print.thres.best.method="youden",
+     print.thres.best.weights=c(3, 0.47),
+     print.thres.cex=.8)
+```
+
+In that case the  optimality criterion is  modified as 
+\[
+\max(relative \ cost \times prevalence \times sensitivity + (1-prevalence) \times specificity)
+\, .
+\]
+Automatic cost-based fitting is possible with some particular methods and packages in R.
+
+
+## Log-Loss
+
+This is minus the *Log-likelihood*, that is 
+\[
+-  \sum_{i=1}^{n}  
+  \sum_{k=1}^{K}{1 (y_{i} = k) \times \log \widehat{p}_{k} (x_{i})}
+  \, .
+\]
+This allows for any number of classes. In the two classes case, we want to minimize
+\[
+-  \sum_{i=1}^{n}  
+\left(
+  {1 (y_{i} = 1) \times \log \widehat{p}_{1} (x_{i})} +
+  {1 (y_{i} = -1) \times \log \widehat{p}_{-1} (x_{i})}
+  \right)
+  \, .
+\]
+
+# Cross-Validation for Classification
+
+To estimate correctly any of the risk we have chosen, we can rely on  cross-validation techniques we have seen for the regression model. Say for instance we want to optimize accuracy.
+
++ Training-Test: Use the training data to estimate the model and the test data to estimate the risk by
+\[
+CV_{test} = \frac{1}{n_{test}} \sum_{j \in test}{ 1 \left(y_{j} = \widehat{f}(x_{j})\right)}  
+\, .
+\]
++ K-fold Cross-Validation: Separate data into K subsamples, repeat  Training-Test method $K$ times by using each of the $K$ subsample as Test data, then average the estimated risks. 
++ These methods can be reapeated.
++ Leave-One-Out Cross Validation: each of the observations play the  role of the Test data in turn, then average the estimated risks.
+
+
+```{r Setseeds, echo=FALSE}
+# function to set up random seeds
+setSeeds <- function(method = "cv", 
+                     numbers = 1, repeats = 1, 
+                     tunes = NULL, seed = 123) 
+  {
+#B is the number of resamples and integer vector 
+# of M (numbers + tune length if any)
+  B <- if (method == "cv") numbers
+  else if(method == "repeatedcv") numbers * repeats
+  else NULL
+  
+  if(is.null(length)) {
+    seeds <- NULL
+  } else {
+    set.seed(seed = seed)
+    seeds <- vector(mode = "list", length = B)
+    seeds <- 
+      lapply(seeds, function(x) 
+        sample.int(n = 1000000, 
+                   size = numbers + ifelse(is.null(tunes), 
+                                           0, tunes)))
+    seeds[[length(seeds) + 1]] <- 
+      sample.int(n = 1000000, size = 1)
+  }
+  # return seeds
+  seeds
+}
+```
+
+
+```{r}
+sixStats <- function(...) c(twoClassSummary(...), 
+                            defaultSummary(...), mnLogLoss(...))
+```
+
+
+```{r}
+# control variables
+numbers <- 5
+repeats <- 10
+rcvTunes <- 1 # tune number of models
+seed <- 123
+# repeated cross validation
+rcvSeeds <- setSeeds(method = "repeatedcv", 
+                     numbers = numbers, repeats = repeats,
+                     tunes = rcvTunes, seed = seed)
+
+ctrl <- trainControl(method = "repeatedcv",
+                     number = numbers, 
+                     repeats = repeats,
+                     seeds = rcvSeeds,
+                     classProbs = TRUE,
+                     summaryFunction = sixStats)
+```
+
+
+
+```{r}
+set.seed(1410)
+LogitFit <- train(classes ~ ., data = twoClass, 
+               method = "glm" , 
+               preProcess = c("center"),
+               trControl = ctrl)
+summary(LogitFit)
+LogitFit
+```
+
+```{r}
+boxplot(LogitFit$resample$ROC, main="AUC", col="yellow")
+boxplot(LogitFit$resample$Sens, main="Sens", col="green")
+```
+
+
+##  Quadratic Logit Classifier
+
+We could include, e.g. , quadratic terms or interactions in the model. in that case *log odds* will include those terms, and the classifier depends nonlinearly of $x$.
+
+```{r Quadratic_Logit}
+set.seed(1410)
+Logit2 <- train(classes ~ Education + Income  
+                + I(Education^2) + I(Income^2) 
+                + I(Education*Income), data=twoClass, 
+                method="glm", 
+                preProc=c("center"), 
+                trControl=ctrl)
+```
+
+```{r QLogit_Frontier, echo=FALSE}
+PlotGrid(predict(Logit2, newdata = Grid), "Q-Logit")
+```
+
+
+```{r}
+Pred <- predict(Logit2, newdata = twoClass)
+caret::confusionMatrix(data = Pred, 
+                       reference = classes,
+                       positive = "Rural",
+                       mode = "sens_spec")
+```
+
+
+```{r ROC2}
+pprob2 <- predict(Logit2, twoClass, type = "prob")
+twoclassesROC2 <- roc(twoClass$classes, 
+                      pprob2[, "Rural"])
+### Note the x-axis is reversed
+plot(twoclassesROC2, print.auc = TRUE, 
+     auc.polygon = TRUE)
+```
+
+# (Bayesian) Discriminant Analysis
+
+Bayes' Rule says
+\[
+p_{k} (x_{0}) = \Pr \left( y = k | x= x_{0}\right) = \frac{\Pr \left( x=x_{0} | y = 1 \right)
+\Pr \left( y = k\right)}{\Pr \left( x=x_{0}\right)}
+\qquad k=1, -1
+\, .
+\]
+The goal is to estimate each of the right-hand side quantities to obtain $\widehat{p}_{1} (x_{0})$.
+The classifier is
+\[
+\widehat{y}_{i} = 1 \Leftrightarrow
+\widehat{p}_{1} (x_{0}) >  \widehat{p}_{-1} (x_{0})
+\qquad \widehat{y}_{i} = -1 \Leftrightarrow
+\widehat{p}_{1} (x_{0}) \leq \widehat{p}_{-1} (x_{0})
+\, .
+\]
+How to estimate conditional probabilities? 
+First note that
+\[
+\log p_{k} (x_{0}) = \log \Pr \left( x=x_{0} | y = k \right) + \log \Pr \left( y = k\right) - \log \Pr \left( x=x_{0}\right)
+\, .
+\]
+The classifier is
+\[
+\widehat{y}_{i} = 1 \Leftrightarrow \log \widehat{p}_{1} (x_{0})  > \log \widehat{p}_{-1} (x_{0})
+\qquad \widehat{y}_{i} = -1 \Leftrightarrow
+\log \widehat{p}_{1} (x_{0}) \leq \log \widehat{p}_{-1} (x_{0})
+\, .
+\]
+So we don't need to bother about estimating $\log\Pr\left(x=x_{0}\right)$ because it cancels out.
+
+Also we can simply estimate $\Pr\left( y = k\right)$ by 
+$\widehat{p}_{k}$, the proportion of $y=k$ in the sample. 
+We only have to decide how to estimate 
+$\log\Pr\left( x=x_{0} | y = k \right)$.
+
+Typically, discriminant Analysis makes the  assumption that $x | y=k \sim N\left( \mu_{k}, \Sigma_{k} \right)$. Then we estimate
+$\mu_{k}$ and $\Sigma_{k}$ by ML (group means and group variances) and use
+\[
+\log \Pr \left( x=x_{0} | y = k \right)  =  - \frac{p}{2} \log |\Sigma_{k}| - \frac{p}{2} \log \left(2 \pi\right) - \frac{1}{2} (x-\mu_{k})'\Sigma_{k}^{-1} (x-\mu_{k})
+\, .
+\]
+
+## Linear Discriminant Analysis
+
+Assume $\Sigma_{k} = \Sigma$ for all $k$. Then one can estimate it by averaging the group variances.
+In that case comparing the log probabilities amount to compare linear functions of the $x$ (check from the above formula that quadratic parts are equal and thus do not play any role).
+
+We estimate $\Sigma$ by ML: averaging group variance with weights (approximately) corresponding to their in-sample frequency.
+  
+```{r LDA}
+set.seed(1410)
+Lda <- train(classes ~ ., data = twoClass, 
+             method = "lda" , trControl = ctrl)
+```
+
+```{r PlotLDA, , echo=FALSE}
+PlotGrid(predict(Lda, newdata = Grid), "LDA")
+```
+
+LDA is similar to  linear Logit, difference comes from the way we estimate the parameters.
+
+## Quadratic Discriminant Analysis
+
+Does not assume $\Sigma_{k} = \Sigma$ for all $k$, and thus yields a quadratic boundary.
+
+```{r QDA}
+set.seed(1410)
+Qda <- train(classes ~ ., data = twoClass, 
+             method = "qda" , trControl = ctrl)
+```
+
+```{r PlotQDA, echo=FALSE}
+PlotGrid(predict(Qda, newdata = Grid), "QDA")
+```
+
+
+## Naive Bayes Discrimination
+
+Assume that the components of $x$ are independent in each class. Then  $\Pr \left( x=x_{0} | y = k \right)  = \prod_{j=1}^p \Pr \left( x_j=x_{j,0} | y = k \right)$.
+
++ Very useful when $x$ is high-dimensional.
++ Discrete $x$ modeled as binomial or multinomial: parameters are easily estimated.
++ Continuous $x$ can be modeled as Gaussian: in that case same as before but with *diagonal* variance covariance.
+    
+```{r Classical_Naive_Bayes}
+set.seed(1410)
+Bayes <- train(classes ~ ., data = twoClass, 
+               method = "nb" , trControl = ctrl,
+               tuneGrid = data.frame(usekernel = c(FALSE), 
+                          fL = c(0), adjust = c(1)))
+```
+
+```{r PlotBayes, echo=FALSE}
+PlotGrid(predict(Bayes, newdata = Grid), "Naive Bayes")
+```
+
+## Naive Bayes Discrimination with Kernel Density Estimation
+
+We can estimate the (conditional) density of each $x$ with a kernel estimator.
+
+```{r Naive_Bayes_with_kernel_density_estimation, }
+set.seed(1410)
+KernelBayes <- train(classes ~ ., data = twoClass, 
+                     method = "nb" , 
+                     trControl = ctrl,
+                     tuneGrid = data.frame(
+                       usekernel = c(TRUE), fL = c(0), 
+                       adjust = c(1)))
+```
+
+```{r PlotBayesK, echo=FALSE}
+PlotGrid(predict(KernelBayes, newdata = Grid),
+         "Naive Bayes with kernel density estimates")
+```
+
+
+# K-NN
+
+Because we want to estimate a conditional expectation, we can also use KNN. In the nearest neighbor method, we need to supply a parameter $k$, the number of neighbors used for estimation. **It is key to scale the explanatory variables when using Knn.** Indeed since the Euclidean distance is used, changing the units of a variables change which observations are nearest neighbors.
+
+```{r echo=FALSE}
+# control variables
+numbers <- 5
+repeats <- 10
+rcvTunes <- 9 # tune number of models
+seed <- 123
+# repeated cross validation
+krcvSeeds <- setSeeds(method = "repeatedcv", 
+                     numbers = numbers, repeats = repeats,
+                     tunes = rcvTunes, seed = seed)
+
+kctrl <- trainControl(method = "repeatedcv",
+                     number = numbers,
+                     seeds = krcvSeeds,
+                     classProbs = TRUE,
+                     summaryFunction = sixStats)
+```
+
+
+
+```{r}
+set.seed(1410)
+KnnFit <- train(classes ~ ., data = twoClass, 
+               method = "knn" , 
+               trControl = kctrl,
+               preProcess = c("center","scale"),
+               tuneGrid = expand.grid(k = seq(40, 120, length= rcvTunes ) ))
+plot(KnnFit, metric = "ROC")
+plot(KnnFit, metric = "Sens")
+plot(KnnFit, metric = "Accuracy")
+plot(KnnFit, metric = "logLoss")
+```
+
+
+```{r}
+results <- data.frame(KnnFit$results)
+ord <- order(results$k,decreasing = TRUE)
+results <- results[ord,]
+# The results are reordered according to increasing model complexity
+# Here the largest k corresponds to the least complex model 
+BestROC <- best(results, metric="ROC", maximize = TRUE)
+BestSens <- best(results, metric="Sens", maximize = TRUE)
+BestAcc <- best(results, metric="Accuracy", maximize = TRUE)
+BestLL <- best(results, metric="logLoss", maximize = FALSE)
+choice <- results$k[c(BestROC, BestSens, BestAcc, BestLL)]
+names(choice) <- c("ROC","Sens","Accuracy", "logLoss")
+print(choice)
+```
+
+```{r}
+set.seed(1410)
+KnnFitRoc <- train(classes ~ ., data = twoClass, 
+               method = "knn" , 
+               trControl = ctrl,
+               preProcess = c("center","scale"),
+               tuneGrid = expand.grid(k = 50) )
+```
+
+
+```{r , echo=FALSE}
+PlotGrid(predict(KnnFitRoc, newdata = Grid), "KNN with k=50")
+```
+
+
+```{r, echo=FALSE}
+set.seed(1410)
+KnnFitSens <- train(classes ~ ., data = twoClass, 
+               method = "knn" , 
+               trControl = ctrl,
+               preProcess = c("center","scale"),
+               tuneGrid = expand.grid(k = 80) )
+```
+
+
+```{r , echo=FALSE}
+PlotGrid(predict(KnnFitSens, newdata = Grid), "KNN with k=80")
+```
+
+
+```{r}
+pprob <- predict(KnnFitSens, twoClass, 
+                type = "prob")[, "Rural"]
+twoclassesROCK <- roc(relevel(twoClass$classes, ref = "Urban"), pprob)
+### Note the x-axis is reversed
+plot(twoclassesROCK, print.auc = TRUE, 
+     auc.polygon = TRUE)
+```
+
+
+# Comparison of Models
+
+```{r}
+models <- list( Logit = LogitFit, Logit2 = Logit2, 
+                Lda = Lda, Qda = Qda,  Bayes = Bayes, 
+                KBayes = KernelBayes, KRoc = KnnFitRoc, 
+                KSens = KnnFitSens)
+perf <- resamples(models)
+colvec <- c("red", "yellow", "orange",
+            "darkolivegreen3", "pink", 
+            "blue", "brown", "grey")
+boxplot(perf$values[c("Logit~Accuracy", "Logit2~Accuracy", 
+                      "Lda~Accuracy", "Qda~Accuracy", 
+                      "Bayes~Accuracy", "KBayes~Accuracy",
+                      "KRoc~Accuracy", "KSens~Accuracy")],
+        names = names(models), col=colvec, main = "Acc")
+boxplot(perf$values[c("Logit~ROC", "Logit2~ROC", 
+                      "Lda~ROC", "Qda~ROC", 
+                      "Bayes~ROC", "KBayes~ROC",
+                      "KRoc~ROC", "KSens~ROC")],
+        names = names(models), col=colvec, main= "AUC")
+boxplot(perf$values[c("Logit~Sens", "Logit2~Sens", 
+                      "Lda~Sens", "Qda~Sens", 
+                      "Bayes~Sens", "KBayes~Sens",
+                    "KRoc~Sens", "KSens~Sens")],
+        names = names(models), col=colvec, main = "Sens")
+``` 
+
+
+# Wrap-up
+
+- In classification, there are a number of adjustment measures. The main ones are accuracy, sensitivity, specificity, the ROC curve and its AUC.
+- Which measure you should consider depends on the context and your goal.
+- Logit is a benchmark parametric model for classification, discriminant analysis and its variants is also very popular 
+- Knn can be used as well: don't forget to scale explanatory variables when applying it.
+
+
+Now you can read Chap 5 (Classification) and Chap 6 (Linear Model Selection) if you haven't done it already.
+Nest time, we'll talk about the bootstrap (5.2)
+
+## Quizz
+
+1. Qu’est-ce que la classification supervisée (ou discrimination)?
+2. Comment s’exprime les logs des rapports de cote dans un modèle logit?
+3. Pour la classification supervisée, qu’est-ce que la règle de Bayes à la base de l’analyse discrimiante?
+4. Quels sont les hypothèses sous-jacentes à l’analyse discriminante linéaire?
+5. Quel point commun entre le logit et l’analyse discriminante linéaire? Quelle différence?
+6. Expliquez comment utiliser la méthode des plus proches voisins pour la classification supervisée.
+7. Quels sont les différents critères pour juger de la pertinence d'un classificateur?
+8. Qu'est-ce que la précision? 
+9. Qu'est-ce que la sensitivité?
+10. Qu'est-ce que la spécificité?
+11. Qu'est-ce que la courbe ROC et l'AUC?
+
+
+## Homework
+
+Work with the Boston data from the MASS package. Create a new dataframe where you replace crime rate by a factor that takes two values depending on whether crime rate is below or above its median. Take "low" crime rate as the reference factor.
+
+- Apply logit and three otehr methods to classify crime rate as "high."
+Compare the different models along the different criteria: accuracy,  AUC, sensitivity, and specificity. Comment.
+- If you were the chief of Boston police (and didn't have access to crime rate), which criterion would you favor and which model would you prefer?
+
+
+
+
+
