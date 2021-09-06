@@ -1,0 +1,250 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken.
+
+\documentclass[xcolor=x11names,compress, aspectratio=169]{beamer}
+%\documentclass[xcolor=x11names,compress, handhouts, aspectratio=169]{beamer}
+%% General document
+\usepackage{graphicx, subfig}
+%% Beamer Layout
+\useoutertheme[subsection=false,shadow]{miniframes}
+\useinnertheme{default}
+\usefonttheme{serif}
+\usepackage{palatino}
+
+%%%%%%% Mes Packages %%%%%%%%%%%%%%%%
+%\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{dsfont} % Pour indicatrice
+\usepackage{url}
+\usepackage{multirow}
+%remove the icon
+\setbeamertemplate{bibliography item}{}
+
+%remove line breaks
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+
+%% ------ MEs couleurs --------
+\definecolor{vert}{rgb}{0.1,0.7,0.2}
+\definecolor{brique}{rgb}{0.7,0.16,0.16}
+\definecolor{gris}{rgb}{0.7, 0.75, 0.71}
+\definecolor{twitterblue}{rgb}{0, 0.42, 0.58}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+\definecolor{siap}{RGB}{3,133, 168}
+
+
+%%%%%%%%%%%%%%%%% BEAMER PACKAGE %%%%%%%
+
+\setbeamerfont{title like}{shape=\scshape}
+\setbeamerfont{frametitle}{shape=\scshape}
+
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{alerted text}{fg=red}
+\setbeamercolor*{example text}{fg=black}
+\setbeamercolor*{structure}{fg=black}
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
+
+\renewcommand{\(}{\begin{columns}}
+\renewcommand{\)}{\end{columns}}
+\newcommand{\<}[1]{\begin{column}{#1}}
+\renewcommand{\>}{\end{column}}
+
+% Path for the graphs
+\graphicspath{{Graphics/}{../../../../Visualisation/Presentations/Graphics/}{../../Visualisation/Presentations/Graphics/}{c:/Gitmain/MLCourse/UNML/Module2/M2-SimpleClassification_files/figure-html/}  }
+
+%remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+
+% Natbib for clean bibliography
+\usepackage[comma,authoryear]{natbib}
+
+\begin{document}
+%%% Title page %%%%%
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+
+\hspace{1cm}
+
+\color{brique}{\huge{Supervised Classification}}
+
+\hspace{2cm}
+\begin{center}
+
+\includegraphics[height=0.10\textwidth]{SIAP_logo_Big.png}
+
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%  ----------- Dataviz  Definition  -----------%%%
+
+\section{Introduction}
+
+\begin{frame} % Cover slide
+
+\frametitle{\textcolor{brique}{[ Classification ]}}
+What is a classification problem? 
+\pause
+\begin{itemize}[<+->]
+  \item The goal of classification is to understand why an observation belongs to a certain category
+  \item The interest is on $y$ that takes discrete values:  0/1, high school/prilmary school/no education; urban/rural
+  \item There may be variables explaining why we observe that $y$ belongs to a particular category
+  \item A classifier is a tool that  provides a classification for $y$
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+
+\frametitle{\textcolor{brique}{[ Supervised \textit{vs} unsupervised Classification ]}}
+
+\pause
+\begin{itemize}[<+->]
+  \item In \textbf{supervised }classification, we observe the class for  $y$
+  \item[] One may learn, for that information and estimate the impact of other variables on that classification (regression)
+   \item In \textbf{unsupervised }classification, we observe a set of variables for each observation
+  \item[]  The goal is to classify observations from those variables (clustering) without having any information of what a category means. 
+  \item We'll focus on \textbf{supervised }classification
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  An example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item You observe households that are either in \textit{Urban} or \textit{Rural} areas (represented here by the colors) and one variable (feature): \textit{Education}. 
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{univariatefig-1.png} \end{center}
+  \item A classifier here would determine the value of Education that separate "Rural" from  "Urban" 
+  \item A classifier is "if $x \geq x_t$  then $y$ is categorized as Urban" 
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  A 2-D example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item You observe households that are either in \textit{Urban} or \textit{Rural} areas (represented here by the colors) and \textbf{two} variables (features): \textit{Education} and \textit{Income}
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{bivariatefig-1.png} \end{center}
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  A 2-D example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item[] \begin{center}\includegraphics[width = 0.3\textwidth]{bivariatefig-1.png} \end{center}
+   \item A classifier here would determine a rule with both \textit{Education}  and \textit{Income} to separate "rural" from "Urban"
+  \item The rule can be based on a linear relationship between \textit{Education}  and \textit{Income} or can be non linear.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  A 2-D example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item The logit is an example of linear classifier
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{Logit_Frontier-1.png} \end{center}
+  \item The rule that separated the two classes is $ x'\beta \geq t_0$ with $t_0$ a known threshold
+  \item[] or $\beta_1 Education + \beta_2 Income \geq t_0$ 
+ 
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  A 2-D example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item The quadratic logit is an example of non-linear classifier
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{QLogit_Frontier-1.png} \end{center}
+  \item The rule that separated the two classes is non linear in the variables textit{Education}  and \textit{Income} 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  A 2-D example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item Other examples can be very non linear
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{PlotBayesK-1.png} \end{center}
+  \item It is hard to understand how the two classes  are built using \textit{Education}  and \textit{Income}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  A 2-D example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item Other examples can be very non linear
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{PlotQDA-1.png} \end{center}
+  \item It is hard to understand how the two classes  are built using \textit{Education}  and \textit{Income}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{What did we learn?}
+ \begin{itemize}
+  \item<+-> Is the line fitting the data?
+   \begin{itemize}
+      \item<+->[] One may always find a relation between two variables
+      \item<+->[] Statistical test help asses the significance of a variable
+  \end{itemize}
+  \item<+-> How good is the linear adjustment: $R^2$
+  \begin{itemize}
+      \item<+->[] $$R^2 = \frac{TSS- RSS}{TSS}$$
+      \item<+->[] with:  $TSS= \sum_{i=1}^n (y_i -\bar{y})^2 $ and $RSS= \sum_{i=1}^n (y_i - \widehat{f}(x_i))^2 $
+ \end{itemize}
+ \item<+-> $R^2$ is a very popular measure. The closer to 1, the better.
+ \item<+->  $R^2$  can be very misleading
+ \end{itemize}
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
+
+\begin{frame} % Cover slide
+\frametitle{ }
+\pause
+ \begin{itemize}[<+->]
+  \item[]
+  \item
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%% Last Slide %%%%%%%%%%%%%%%%
+
+\begin{frame}[allowframebreaks]%in case more than 1 slide needed
+\frametitle{References}
+    {\footnotesize
+    %\bibliographystyle{authordate1}
+    \bibliographystyle{apalike}
+    \bibliography{../../../Visualisation/Visu}
+    }
+\end{frame}
+\end{document}
+
+%\bibliographystyle{authordate1}
+%\bibliography{c:/Chris/Visualisation/Visu}
+%\end{frame}
