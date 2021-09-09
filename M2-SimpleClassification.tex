@@ -157,8 +157,8 @@ What is a classification problem?
 \begin{itemize}[<+->]
   \item The logit is an example of linear classifier
   \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{Logit_Frontier-1.png} \end{center}
-  \item The rule that separated the two classes is $ x'\beta \geq t_0$ with $t_0$ a known threshold
-  \item[]\textit{e.g.} $\beta_1 Education + \beta_2 Income \geq t_0$
+  \item The rule that separated the two classes is $ x'\beta \geq T_0$ with $T_0$ a known threshold
+  \item[]\textit{e.g.} $\beta_1 Education + \beta_2 Income \geq T_0$
 
 \end{itemize}
 \end{frame}
@@ -358,7 +358,6 @@ Accuracy is not the panacea and may be misleading
 \end{itemize}
 \end{frame}
 
-
 \begin{frame} % Cover slide
 \frametitle{\textcolor{brique}{[Confusion Matrix  \& Kappa ($\kappa$) ]}}
 \emph{Kappa} ($\kappa$) is defined to measure the accuracy with imbalanced classes
@@ -367,20 +366,105 @@ Accuracy is not the panacea and may be misleading
   $$ \kappa = \frac{P_o - P_e}{1 - P_e}  $$
   \item[]$P_o$ is the current classifier accuracy which is compared here with the accuracy of an uniformed classifier $P_e$
   \item[] $P_e$ is the accuracy of a classifier that would operate purely by chance, using no information.
-  \item $P_o$ is easy to compute (here = 0.75) while  $P_e$  is more complex to compute. 
+  \item $P_o$ is simple (here = 0.75) while  $P_e$  is more complex to compute. 
   \item  The larger $\kappa $ is, the better the model for a given distribution of classes in a data set
   \end{itemize}
 \end{frame}
 
 
+\section{Logit}
 
-\section{Classifiers}
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Logit as You know it ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item[] When dealing with a discrete outcome $y$ we cannot use a $direct$ linear relationship between $y$ and the explanatory variables $x$ ( \textit{i.e. Education, Income})
+  \item Logit aims at estimating the probabilities  $\pi = Probablity[y= 1]$, which are continuous ($\in [0,1]$)
+  \item The definition of the logit model is:
+  $$
+  \pi = Pr \left( y = 1\right) = F( x'\beta) = \frac{1}{1+\exp(-x'\beta)}
+  $$
+  \item This can be transformed into:
+  $$
+  \pi = \frac{exp(-x'\beta)}{1+ exp(-x'\beta)}
+  $$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Logit as You \textbf{Don't} know it ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item[] From this equation
+  $$
+  \pi = \frac{exp(-x'\beta)}{1+ exp(-x'\beta)}
+  $$
+  \item[] one gets  the \textbf{linear} nature of the logit: 
+   $$
+  log(\frac{\pi}{1 - \pi}) = x'\beta
+  $$
+  \item[]where $\frac{\pi}{1 - \pi}$ is the odd ratio $\in [0,\infty]$  with values indicating high or low probability that $y=1$
+  \item[$\hookrightarrow$] "\emph{The logit models log of odd ratios as linear in x}"
+\end{itemize}
+\end{frame}
 
 
 
 \begin{frame} % Cover slide
-\frametitle{\textcolor{brique}{[Logit as Don't know it ]}}
+\frametitle{\textcolor{brique}{[Logit as a classifier ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item Once estimated, $\widehat \pi_i$ provide a simple rule for classification
+  \item[] $$
+   \widehat \pi_i > t_0  \Leftrightarrow \widehat y_i = 1
+  $$
+    \item[] Where $t_0$ is a threshold provability, by default $1/2$. 
+  \item If  $t_0 = 1/2$ (default), then the rule is equivalent to:
+   $$
+   x'_i \widehat \beta > 0  \Leftrightarrow \widehat y_i = 1
+  $$  
+  \item If  $t_0 \neq 1/2$:
+   $$
+   x'_i \widehat \beta > T_0  \Leftrightarrow \widehat y_i = 1
+  $$  
+  \item[$\hookrightarrow$] The logit classifier depends on the linear combination of the $x$'s
+\end{itemize}
+\end{frame}
 
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Importance of the threshold ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item The rule $ x'\beta \geq T_0$ defines the partition of the space
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{Logit_Frontier-1.png} \end{center}
+  \item This partition is sensitive to the choice of the threshold $T_0$ (and the $t_0$)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Importance of the threshold ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item Changing $t_0$ will  change the predictions \&  the classification
+  \item[] A higher $t_0$ will allocate less observations to the $y=1$ category (Urban)
+  \item[] A lower $t_0$ will allocate more observations to the $y=1$ category
+  \item The choice of $t_o$ should be done according to the data and observed classes repartition
+  \item \textit{Specificit}y and \textit{Sensitivity} are affected by $t_0$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[the ROC Curve ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item We want the \textit{Specificit}y and \textit{Sensitivity} to be both maximized
+  \item The ROC curve help visualize the best choice
+  \item 
+  \item \textit{Specificit}y and \textit{Sensitivity}  ar affected by $t_0$
+\end{itemize}
 \end{frame}
 
 
@@ -423,7 +507,7 @@ Accuracy is not the panacea and may be misleading
  \item \textbf{Logit} is a benchmark parametric model for classification
  \item[] One may use the \textbf{ROC} to change the threshold parameter
  \item \textbf{k-NN} can be used as well
- \item[] \textit{(don't forget to scale explanatory variables) }.
+ %\item[] \textit{(don't forget to scale explanatory variables) }.
 \end{itemize}
 \end{frame}
 
