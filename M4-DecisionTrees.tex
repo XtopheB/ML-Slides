@@ -1,0 +1,236 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken.
+
+\documentclass[xcolor=x11names,compress, handhouts]{beamer}
+%% General document
+\usepackage{graphicx, subfig}
+%% Beamer Layout
+\useoutertheme[subsection=false,shadow]{miniframes}
+\useinnertheme{default}
+\usefonttheme{serif}
+\usepackage{palatino}
+
+%%%%%%% Mes Packages %%%%%%%%%%%%%%%%
+%\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{dsfont} % Pour indicatrice
+\usepackage{url}
+\usepackage{multirow}
+
+%remove the icons
+\setbeamertemplate{bibliography item}{}
+
+%remove line breaks
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+
+%% ------ MEs couleurs --------
+\definecolor{vert}{rgb}{0.1,0.7,0.2}
+\definecolor{brique}{rgb}{0.7,0.16,0.16}
+\definecolor{gris}{rgb}{0.7, 0.75, 0.71}
+\definecolor{twitterblue}{rgb}{0, 0.42, 0.58}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+\definecolor{siap}{RGB}{3,133, 168}
+
+
+%%%%%%%%%%%%%%%%% BEAMER PACKAGE %%%%%%%
+
+\setbeamerfont{title like}{shape=\scshape}
+\setbeamerfont{frametitle}{shape=\scshape}
+
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{alerted text}{fg=red}
+\setbeamercolor*{example text}{fg=black}
+\setbeamercolor*{structure}{fg=black}
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
+
+\renewcommand{\(}{\begin{columns}}
+\renewcommand{\)}{\end{columns}}
+\newcommand{\<}[1]{\begin{column}{#1}}
+\renewcommand{\>}{\end{column}}
+
+% Path for the graphs
+\graphicspath{{Graphics/}{../../../../Visualisation/Presentations/Graphics/}{../../Visualisation/Presentations/Graphics/}
+{c:/Gitmain/MLCourse/UNML/Module4/M4-0-SimpleTrees_files/figure-html/}{c:/Gitmain/MLCourse/UNML/Module2/M2-1-SimpleClassification_files/figure-html/}{c:/GitMain/MLCourse/UNML/Module0/M0_files/figure-html/}
+}
+
+%remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+
+% Natbib for clean bibliography
+\usepackage[comma,authoryear]{natbib}
+
+\begin{document}
+%%% Title page %%%%%
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics \& SDGs}}
+
+\hspace{1cm}
+
+\color{brique}{\huge{Decision Trees}}
+
+\hspace{2cm}
+\begin{center}
+
+\includegraphics[height=0.10\textwidth]{SIAP_logo_Big.png}
+
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% http://www.sthda.com/english/articles/37-model-selection-essentials-in-r/153-penalized-regression-essentials-ridge-lasso-elastic-net/
+%%
+
+%%%  ----------- Dataviz  Definition  -----------%%%
+\section{Introduction}
+
+\begin{frame} % Cover slide
+
+\frametitle{\textcolor{brique}{[ Decision Trees ]}}
+\textit{Decision Trees} are methods used for classification or regression analysis. $\hookrightarrow$ Focus on classification\\
+\begin{center} \includegraphics[width = 0.5\textwidth]{FullTree.png} \end{center}
+\pause
+\begin{itemize}[<+->]
+  \item Trees split the space into non-overlapping spaces
+  \item Used to assign/predict a \textit{class} following conditions 
+  \item Optimally, final classification is homogenous
+\end{itemize}
+\end{frame}
+
+\section{What's in a tree?}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ What's in a tree? ]}}
+Trees have a very simple structure and are easy to understand: 
+\begin{center} \includegraphics[width = 0.6\textwidth]{FullTree.png} \end{center}
+\pause
+\begin{itemize}[<+->]
+  \item[] Trees have:
+  \begin{itemize}[<+->]
+    \item \textbf{Nodes} where splitting decisions are done
+    \item \textbf{Branches}  following conditions
+    \item \textbf{Leaves} are terminal nodes of the classification
+  \end{itemize}
+\end{itemize}
+\end{frame}
+ \section{How to build a tree?}
+
+\begin{frame} 
+\frametitle{\textcolor{brique}{[ How to construct a tree? ]}}
+
+\begin{center} \includegraphics[width = 0.6\textwidth]{FullTree.png} \end{center}
+\pause
+\begin{itemize}[<+->]
+    \item Trees are based on recursive binary splits
+    \item Each node is a condition on a variable, based on a threshold. 
+    \item Each node separates the observations in two sets 
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ How to construct a tree? ]}}
+ \hfill \includegraphics[width = 0.2\textwidth]{FullTree.png} \\
+ 
+We need several tools to build a tree
+\pause
+\begin{itemize}[<+->]
+    \item  A method to choose the decision variable (one per node)
+    \item  A criterion to define best threshold  
+    \item  A criterion to measure the quality of each split 
+    \item  A way to decide when to stop (the terminal node becomes a leaf)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ Quality of a tree ]}}
+At each node, one can measure the \textit{purity} of each split
+\pause
+\begin{itemize}[<+->]
+    \item  Misclassification error rate
+    \item  The Gini coefficient measures the purity in each node
+$$
+  D_{\kappa} = \sum_{m=1}^M  \widehat{p}_{m \kappa} (1-\widehat{p}_{m
+  \kappa})
+$$
+  where $\widehat{p}_{m \kappa}$ is the proportion of class $m$ in
+  node $\kappa$.  
+    \item  The entropy or information:
+ $$
+  D_{\kappa} =   - \sum_{m=1}^M  \widehat{p}_{m \kappa}  \log
+  \widehat{p}_{m \kappa}
+  $$
+  \item[Note:] If in the each node there is only one class   represented, then $D_{\kappa}$ is zero.  
+  
+\end{itemize}
+\end{frame}
+
+
+\section{Step-by-Step}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ Example on a simple tree ]}}
+Let us see how this tree is constructed:\\
+\includegraphics[width = 0.9\textwidth]{rparttree-1.png} \\
+4 nodes leading to final leaves $\hookrightarrow$  Depth = 5 
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ Example on a simple tree ]}}
+The problem is a 2D space: Education and Income and a classification in Urban vs Rural\\
+\includegraphics[width = 0.9\textwidth]{Step0-1.png}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Example on a simple tree ]}}
+\hfill \includegraphics[width = 0.3\textwidth]{rparttree-1.png} 
+\begin{itemize}
+\item[]
+  \only<2> {\includegraphics[width = 0.8\textwidth]{Step1-1.png} \\ }
+  \only<2> {First the boundary decision line}
+  \only<3> { \includegraphics[width = 0.8\textwidth]{Step1-2.png} \\ }
+  \only<3> {The space below the line is classified as  rural}
+  \only<4> {\includegraphics[width = 0.8\textwidth]{Step2-1.png} \\ }
+  \only<4> {Second boundary decision line}
+  \only<5> {\includegraphics[width = 0.8\textwidth]{Step2-2.png} \\ }
+  \only<5> {The space on the left of the line is classified as  rural}
+  \only<6> {\includegraphics[width = 0.8\textwidth]{Step3-1.png} \\ }
+  \only<6> {Third boundary decision line}
+  \only<7> {\includegraphics[width = 0.8\textwidth]{Step3-2.png} \\ }
+  \only<7> {The space on the right of the line is classified as  Urban}
+  \only<8> {\includegraphics[width = 0.8\textwidth]{Step4-1.png} \\ }
+  \only<8> {Fourth boundary decision line}
+  \only<9> {\includegraphics[width = 0.8\textwidth]{Step4-2.png} \\ }
+  \only<9> {The space above the line is classified as  Urban}
+  \only<10> {\includegraphics[width = 0.8\textwidth]{Step4-3.png} \\ }
+  \only<10> {Finally, the remaining space is classified as rural}
+\end{itemize}
+\end{frame}
+
+
+
+
+\end{document}
+%%%%%%%%%%%%%%% Last Slide %%%%%%%%%%%%%%%%
+
+\begin{frame}[allowframebreaks]%in case more than 1 slide needed
+\frametitle{References}
+    {\footnotesize
+    %\bibliographystyle{authordate1}
+    \bibliographystyle{apalike}
+    \bibliography{../../../Visualisation/Visu}
+    }
+\end{frame}
+\end{document}
+
+%\bibliographystyle{authordate1}
+%\bibliography{c:/Chris/Visualisation/Visu}
+%\end{frame}
