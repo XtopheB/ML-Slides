@@ -56,7 +56,7 @@
 
 % Path for the graphs
 \graphicspath{{Graphics/}{../../../../Visualisation/Presentations/Graphics/}{../../Visualisation/Presentations/Graphics/}
-{c:/Gitmain/MLCourse/UNML/Module4/M4-0-SimpleTrees_files/figure-html/}{c:/Gitmain/MLCourse/UNML/Module2/M2-1-SimpleClassification_files/figure-html/}{c:/GitMain/MLCourse/UNML/Module0/M0_files/figure-html/}
+{c:/Gitmain/MLCourse/UNML/Module4/M4-0-SimpleTrees_files/figure-html/}{c:/Gitmain/MLCourse/UNML/Module4/M4-1-DecisionTrees_files/figure-html/}  {c:/Gitmain/MLCourse/UNML/Module2/M2-1-SimpleClassification_files/figure-html/}{c:/GitMain/MLCourse/UNML/Module0/M0_files/figure-html/}
 }
 
 %remove navigation symbols
@@ -120,7 +120,7 @@ Trees have a very simple structure and are easy to understand:
   \end{itemize}
 \end{itemize}
 \end{frame}
- \section{How to build a tree?}
+
 
 \begin{frame} 
 \frametitle{\textcolor{brique}{[ How to construct a tree? ]}}
@@ -131,45 +131,6 @@ Trees have a very simple structure and are easy to understand:
     \item Trees are based on recursive binary splits
     \item Each node is a condition on a variable, based on a threshold. 
     \item Each node separates the observations in two sets 
-\end{itemize}
-\end{frame}
-
-
-
-\begin{frame}
-\frametitle{\textcolor{brique}{[ How to construct a tree? ]}}
- \hfill \includegraphics[width = 0.2\textwidth]{FullTree.png} \\
- 
-We need several tools to build a tree
-\pause
-\begin{itemize}[<+->]
-    \item  A method to choose the decision variable (one per node)
-    \item  A criterion to define best threshold  
-    \item  A criterion to measure the quality of each split 
-    \item  A way to decide when to stop (the terminal node becomes a leaf)
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{\textcolor{brique}{[ Quality of a tree ]}}
-At each node, one can measure the \textit{purity} of each split
-\pause
-\begin{itemize}[<+->]
-    \item  Misclassification error rate
-    \item  The Gini coefficient measures the purity in each node
-$$
-  D_{\kappa} = \sum_{m=1}^M  \widehat{p}_{m \kappa} (1-\widehat{p}_{m
-  \kappa})
-$$
-  where $\widehat{p}_{m \kappa}$ is the proportion of class $m$ in
-  node $\kappa$.  
-    \item  The entropy or information:
- $$
-  D_{\kappa} =   - \sum_{m=1}^M  \widehat{p}_{m \kappa}  \log
-  \widehat{p}_{m \kappa}
-  $$
-  \item[Note:] If in the each node there is only one class   represented, then $D_{\kappa}$ is zero.  
-  
 \end{itemize}
 \end{frame}
 
@@ -214,6 +175,140 @@ The problem is a 2D space: Education and Income and a classification in Urban vs
   \only<10> {Finally, the remaining space is classified as rural}
 \end{itemize}
 \end{frame}
+
+\section{How to build a tree?}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ How to build a tree? ]}}
+ \hfill \includegraphics[width = 0.2\textwidth]{FullTree.png} \\
+
+We need several tools to build a tree:
+\pause
+\begin{itemize}[<+->]
+    \item  A method to choose the decision variable (one per node)
+    \item  A criterion to define best threshold
+    \item  A criterion to measure the quality of each split
+    \item  A way to decide when to stop (the terminal node becomes a leaf)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ Tools to build a tree ]}}
+At each node, one can measure the \textit{purity} of each split
+\pause
+\begin{itemize}[<+->]
+    \item  Misclassification error rate
+    \item  The Gini coefficient measures the purity in each node $\kappa$
+$$
+  D_{\kappa} = \sum_{m=1}^M  \widehat{p}_{m \kappa} (1-\widehat{p}_{m
+  \kappa})
+$$
+  where $\widehat{p}_{m \kappa}$ is the proportion of class $m$ in
+  node $\kappa$.
+    \item  The entropy or information:
+ $$
+  D_{\kappa} =   - \sum_{m=1}^M  \widehat{p}_{m \kappa}  \log
+  \widehat{p}_{m \kappa}
+  $$
+  \item[Note:] If in the each node there is only one class   represented, then $D_{\kappa}$ is zero.
+
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Example on a simple tree ]}}
+\hfill \includegraphics[width = 0.3\textwidth]{rparttree-1.png}
+\begin{itemize}
+\item[]
+  \only<2> {\includegraphics[width = 0.8\textwidth]{Step1-1.png} \\ }
+  \only<2> {First the boundary decision line}
+  \only<3> { \includegraphics[width = 0.8\textwidth]{Step1-2.png} \\ }
+  \only<3> {The space below the line is classified as  rural}
+  \only<4> { \includegraphics[width = 0.8\textwidth]{Step1-3.png} \\ }
+  \only<4> {Some "Urban" are classified as  rural $\hookrightarrow$ Impurity}
+  \only<5> { \includegraphics[width = 0.8\textwidth]{Step1-4.png} \\ }
+  \only<5> {Some "Rural" are classified as  Urban $\hookrightarrow$ Impurity}
+  \only<6> {\includegraphics[width = 0.8\textwidth]{Step2-1.png} \\ }
+  \only<6> {Second boundary decision line}
+  \only<7> {\includegraphics[width = 0.8\textwidth]{Step2-2.png} \\ }
+  \only<7> {The space on the left of the line is classified as  rural}
+  \only<8> {\includegraphics[width = 0.8\textwidth]{Step2-3.png} \\ }
+  \only<8> {Some "Urban" are classified as  Rural }
+  \only<9> {\includegraphics[width = 0.8\textwidth]{Step2-4.png} \\ }
+  \only<9> {Some "Rural" are classified as  Urban}
+  \only<10> {\includegraphics[width = 0.8\textwidth]{Step3-1.png} \\ }
+  \only<10> {Third boundary decision line}
+  \only<11> {\includegraphics[width = 0.8\textwidth]{Step3-2.png} \\ }
+  \only<11> {The space on the right of the line is classified as  Urban}
+  \only<12> {\includegraphics[width = 0.8\textwidth]{Step3-3.png} \\ }
+  \only<12> {Some "Rural" are classified as  Urban }
+  \only<13> {\includegraphics[width = 0.8\textwidth]{Step3-4.png} \\ }
+  \only<13> {"Urban" seem well classified in the remaining space}
+  \only<14> {\includegraphics[width = 0.8\textwidth]{Step4-1.png} \\ }
+  \only<14> {Fourth boundary decision line}
+  \only<15> {\includegraphics[width = 0.8\textwidth]{Step4-2.png} \\ }
+  \only<15> {The space above the line is classified as  Urban}
+  \only<16> {\includegraphics[width = 0.8\textwidth]{Step4-3.png} \\ }
+  \only<16> {Finally, the remaining space is classified as rural}
+  \only<17> {\includegraphics[width = 0.8\textwidth]{Step4-4.png} \\ }
+  \only<17> {Few "Rural" are classified as  Urban }
+  \only<18> {\includegraphics[width = 0.8\textwidth]{Step4-5.png} \\ }
+  \only<18> {Many "Urban" are classified as Rural }
+  
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ How to build a tree? ]}}
+The construction is based on recursive binary splits
+\pause
+\begin{itemize}[<+->]
+    \item The goal is to increase the quality of the classification at the each stage 
+    \item[$\hookrightarrow$] decrease the \textit{impurity} at each node
+    \item The outcome is "one" tree, not the perfect one 
+    \item  There are many parameters that can be adjusted
+    \begin{itemize}[<+->]
+        \item The maximum \textit{depth} of the tree
+        \item The number of final leaves
+        \item The impurity balance between classes
+        \item The \textit{complexity parameter}   
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Tuning a Tree}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ Trees can be overcomplicated ]}}
+Trees can decompose the space in very specific zones.\\
+ Example with  the full set of variables\\
+ 
+\includegraphics[width = 0.9\textwidth]{Originaltree-1.png}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ How to tune a tree? ]}}
+As usual, we'll base our search on Cross validation
+\pause
+\begin{itemize}[<+->]
+    \item Select the hyperparameter to optimize
+    \item Use cross-validation to train the model for several values of the hyperparameter
+    \item Select the "best" value based on the criteria
+    \item For classification, accuracy or kappa (averaged over CV sets)  
+    \item Evaluate the performance and some other criteria of the best solution
+\end{itemize}
+\end{frame}
+
+% TUNING on Depth 
+
+% Tuning on Model complexity 
+% Def of Model complexity
+% Pruning a tree
+% Wrap up :  Trees are not robust 
+%         : Sensitive to few changes 
+%  Better to ask to several persons and find common patterns --> RF
+
 
 
 
