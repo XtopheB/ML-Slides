@@ -1,0 +1,636 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken.
+
+\documentclass[xcolor=x11names,compress, aspectratio=169]{beamer}
+%\documentclass[xcolor=x11names,compress, handhouts, aspectratio=169]{beamer}
+%% General document
+\usepackage{graphicx, subfig}
+%% Beamer Layout
+\useoutertheme[subsection=false,shadow]{miniframes}
+\useinnertheme{default}
+\usefonttheme{serif}
+\usepackage{palatino}
+
+%%%%%%% Mes Packages %%%%%%%%%%%%%%%%
+%\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{dsfont} % Pour indicatrice
+\usepackage{url}
+\usepackage{multirow}
+%remove the icon
+\setbeamertemplate{bibliography item}{}
+
+%remove line breaks
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+
+%% ------ MEs couleurs --------
+\definecolor{vert}{rgb}{0.1,0.7,0.2}
+\definecolor{brique}{rgb}{0.7,0.16,0.16}
+\definecolor{gris}{rgb}{0.7, 0.75, 0.71}
+\definecolor{twitterblue}{rgb}{0, 0.42, 0.58}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+\definecolor{siap}{RGB}{3,133, 200}
+
+
+%%%%%%%%%%%%%%%%% BEAMER PACKAGE %%%%%%%
+
+
+\setbeamercolor{itemize item}{fg=siap}
+%\setbeamercolor{itemize subitem}{fg=blue}
+%\setbeamercolor{itemize subsubitem}{fg=cyan}
+
+
+\setbeamerfont{title like}{shape=\scshape}
+\setbeamerfont{frametitle}{shape=\scshape}
+
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{alerted text}{fg=siap}
+\setbeamercolor*{example text}{fg=black}
+\setbeamercolor*{structure}{fg=black}
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
+
+\renewcommand{\(}{\begin{columns}}
+\renewcommand{\)}{\end{columns}}
+\newcommand{\<}[1]{\begin{column}{#1}}
+\renewcommand{\>}{\end{column}}
+
+% Path for the graphs
+\graphicspath{{Graphics/}{../../../../Visualisation/Presentations/Graphics/}{../../Visualisation/Presentations/Graphics/}{c:/Gitmain/MLCourse/UNML/Module0/M0_files/figure-html/}  }
+
+%remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+
+% Natbib for clean bibliography
+\usepackage[comma,authoryear]{natbib}
+
+\begin{document}
+
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+\vspace{0.5cm}
+
+{\huge\textcolor{brique}{First Live Lecture (Webinar): \\
+\vspace{0.2cm}
+Starts in \textbf{15} minutes\\
+}}
+
+\vspace{0.5cm}
+\begin{center}
+\textcolor{siap}{\textit{Christophe Bontemps,} UN  SIAP\\ }
+\vspace{1cm}
+
+\includegraphics[height=0.15\textwidth]{SIAP_logo_Big.png}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+\vspace{0.5cm}
+
+{\huge\textcolor{brique}{First Live Lecture (Webinar): \\
+\vspace{0.2cm}
+Starts in \textbf{10} minutes\\
+}}
+
+\vspace{0.5cm}
+\begin{center}
+\textcolor{siap}{\textit{Christophe Bontemps,} UN  SIAP\\ }
+\vspace{1cm}
+
+\includegraphics[height=0.15\textwidth]{SIAP_logo_Big.png}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+\vspace{0.5cm}
+
+{\huge\textcolor{brique}{First Live Lecture (Webinar): \\
+\vspace{0.2cm}
+Starts in \textbf{5} minutes\\
+}}
+
+\vspace{0.5cm}
+\begin{center}
+\textcolor{siap}{\textit{Christophe Bontemps,} UN  SIAP\\ }
+\vspace{1cm}
+
+\includegraphics[height=0.15\textwidth]{SIAP_logo_Big.png}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Title page %%%%%
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+
+\hspace{1cm}
+
+\color{brique}{\huge{Statistical learning: \\ \textit{vs} Machine Learning }}
+
+\hspace{2cm}
+\begin{center}
+
+\includegraphics[height=0.10\textwidth]{SIAP_logo_Big.png}
+
+\end{center}
+\end{frame}
+
+
+%%%% REMINDERS %%%%%%%%
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[-  \textbf{Reminder} -]}}
+\begin{itemize}[<+-|alert@+>]
+   \item Mute yourself \textcolor{brique}{always}!
+   \item The lecture is recorded
+   \item Ask questions in the chat
+  % \item \textbf{Participate}: Answer \textcolor{brique}{quickly} to the polls...
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[-  \textbf{Agenda} -]}}
+\begin{itemize}[<+-|alert@+>]
+   \item Introduction
+   \item Statistical learning \textit{vs} Machine Learning
+   \item Q\&A
+   \item Next week
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Statistical  learning}
+
+\begin{frame} % Cover slide
+\frametitle{What Is Statistical Learning?}
+\pause
+\begin{itemize}[<+->]
+\item[]
+\begin{center}
+\emph{`` Statistical learning refers to a vast set of tools for understanding data''}\\
+
+{\scriptsize Gareth James,  Daniela Witten, Trevor Hastie ,  Robert Tibshirani (2021)}\\
+\vspace{0.5cm}
+\end{center}
+\pause
+   \only<4-7>{$\hookrightarrow$ Involves building statistical models\\ }
+   \only<5> { $\hookrightarrow$ Goals are estimation or prediction \\ }
+   \only<6> { $\hookrightarrow$ Goals are \textbf{estimation} or prediction \\ }
+   \only<7> {$\hookrightarrow$ Goals are estimation or \textbf{prediction} \\ }
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{What Is Statistical Learning?}
+Two main learning problems:
+\pause
+\begin{itemize}[<+->]
+  \item We observe \textbf{both} an \textit{outcome} $y$ and \textit{explanatory} variables $x$s
+   \item[$\hookrightarrow$] \textbf{Supervised} learning
+   \item[] \textit{Most of the examples and applications are supervised learning}
+   \item We \textbf{do not} observe an outcome $y$ but\textbf{ only} several $x$s
+   \item[$\hookrightarrow$] \textbf{Unsupervised} learning (or \textit{cluster analysis})
+  \item[] \textit{More complex models we'll see at the end of the course}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{Statistical learning on an example}
+ \begin{itemize}
+  \item<+->[] \includegraphics[width = 0.7\textwidth]{M0-Scatter-1.png}
+  \item<+->[]  We may be interested in the \textbf{relationship} between the two variables
+ \end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{Understanding = estimate $f(\cdot)$ }
+ \begin{itemize}
+  \item<+->[] \includegraphics[width = 0.7\textwidth]{M0-Scatter-lm-1.png}
+  \item<+->[]  $f(\cdot)$ is the regression line
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{Why estimating $f(\cdot)$?}
+ \begin{itemize}
+  \item<+-> Inference
+   \begin{itemize}
+  \item<+->[] \textit{Understand} the nature of the relationship between $X$ and $Y$
+  \item<+->[] \textit{Identify}  "important" variables to understand $Y$
+ \end{itemize}
+  \item<+-> Prediction
+   \begin{itemize}
+  \item<+->[] Predict $y$ for any \textbf{new} $x$ using $f(\cdot)$
+ \end{itemize}
+ \item<+-> In practice we must estimate  $f(\cdot)$ using a model:
+ \item<+->[] $$ y = f(x) + \varepsilon $$
+ \item<+->[] We denote by $\widehat{f(\cdot)}$ the estimate of $f(\cdot)$
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{How to estimate $f(\cdot)$?}
+ \begin{itemize}
+  \item<+-> Parametric methods
+   \begin{itemize}
+      \item<+->[] Specify a form for $f(\cdot)$, for example linear:
+      \item<+->[] $$y = \beta_0 + \beta_1 x_ + \varepsilon$$
+      %\item<+-> The problem is then to estimate $ \beta_0$ and $\beta_1 \; \hookrightarrow $ ($\widehat \beta_0, \widehat \beta_1$  are the estimates)
+      \item<+-> The goal is to find the line that is  \textbf{minimizing} the distance to the observed points $(x_i, y_i)$.
+                The distance is computed as the Mean Square Error (MSE): $$ MSE(\beta_0, \beta_1) = \frac{1}{n} \sum_{i=1}^{n} \bigl(y_i - (\beta_0 + \beta_1 x_i)\bigr)^2 $$
+      \item<+-> The regression line, defined by $\beta_0$ and $\beta_1$,  is simply the solution of:
+       $$Min_{\; (\beta_0 , \beta_1)} \; MSE(\beta_0, \beta_1) $$
+   \end{itemize}
+ \item<+->[]  The MSE it is the \textit{cost function} minimized to determine $ (\widehat \beta_0, \widehat \beta_1)$
+ \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{How to estimate $f(\cdot)$: In practice}
+ \begin{itemize}
+  \item<+->[] \includegraphics[width = 0.7\textwidth]{M0-scatter-Regline-1.png}
+  \item<+->[] The regression line is found by minimizing the sum of all distances or \textbf{MSE}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{Results: $ \widehat{f(\cdot)}$}
+From the result and the estimated  parameters $ (\widehat \beta_0, \widehat \beta_1)$, we see that there is a relation, and that it is decreasing.
+\begin{table}
+\centering
+\begin{tabular}{l|rrrc}
+\hline
+  & Estimate & Std. Error & t value & $Pr(>|t|)$\\
+\hline
+(Intercept) & 1.75 & 0.04 & 41.09 & 0\\
+\hline
+ltexp &\textbf{ $-0.20^{***}$ }& 0.01 & -31.84 & 0\\
+\hline
+\end{tabular}
+\end{table}
+\vspace{0.5cm}
+ The quality of the adjustment may be measured by the $R^2$ = 0.478
+
+\end{frame}
+
+
+%\begin{frame} % Cover slide
+%\frametitle{What did we learn?}
+% \begin{itemize}
+%  \item<+-> Is the line fitting the data?
+%   \begin{itemize}
+%      \item<+->[] One may always find a relation between two variables
+%      \item<+->[] Statistical test help asses the significance of a variable
+%  \end{itemize}
+%  \item<+-> How good is the linear adjustment: $R^2$
+%  \begin{itemize}
+%      \item<+->[] $$R^2 = \frac{TSS- RSS}{TSS}$$
+%      \item<+->[] with:  $TSS= \sum_{i=1}^n (y_i -\bar{y})^2 $ and $RSS= \sum_{i=1}^n (y_i - \widehat{f}(x_i))^2 $
+% \end{itemize}
+% \item<+-> $R^2$ is a very popular measure. The closer to 1, the better.
+% \item<+->  $R^2$  can be very misleading
+% \end{itemize}
+%\end{frame}
+
+
+%\begin{frame} % Cover slide
+%\frametitle{Beware of $R^2$: Anscombe Quartet (1973)}
+%\pause
+% \begin{itemize}
+%  \item<+->[] \includegraphics[width = 0.6\textwidth]{AnscombeQuartet.png}
+%  \item<+->[] In all these data sets the $R^2$ is 0.67
+% \end{itemize}
+%\end{frame}
+%
+%
+%\begin{frame} % Cover slide
+%\frametitle{Practice of Statistical Learning}
+%\begin{center}
+%\emph{`` ...make both calculations and graphs. Both sorts of output should be studied; each will contribute to understanding.''}
+%\end{center}
+%\begin{itemize}
+% \item<+->[]\scriptsize{F. J. Anscombe (1973)}
+% \item<+->[] \scriptsize{See also \href{https://www.r-bloggers.com/2017/05/the-datasaurus-dozen/}{the datasaurus}}
+%  \item<+->Practice of Statistical learning can be challenging
+%  \item<+->[$\hookrightarrow$] Need to compute good indicators
+%  \item<+->[$\hookrightarrow$] Need to understand the indicators computed
+%  \item<+->[$\hookrightarrow$] Need to go beyond linearity
+% % \item<+->[$\hookrightarrow$] Need to see into the darkness of data clouds...
+% \end{itemize}
+%\end{frame}
+
+
+
+\section{Beyond linearity}
+
+\begin{frame} % Cover slide
+\frametitle{Beyond linearity}
+\pause
+\begin{itemize}
+ \item A linear model may be unadapted or too simple
+ \item[]  $$y = \beta_0 + \beta_1 x^{} + \varepsilon$$
+ \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-lmCI-1.png}
+ \item[] The fit (measured by $R^2$) is: $R^2$= 0.478
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{Beyond linearity}
+
+\begin{itemize}
+ \item A Polynomial model may be better adapted: \textbf{Quadratic} model
+ \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2+ \varepsilon$$
+ \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-poly2-1.png}
+ \item[] Do we have a better fit? $R^2$= 0.484
+ \end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{Beyond linearity}
+
+\begin{itemize}
+ \item Polynomial may be better adapted: \textbf{Cubic} model
+ \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2 + \beta_3 x^3+ \varepsilon$$
+ \item[] \includegraphics[width = 0.6\textwidth]{M0-Scatter-poly3-1.png}
+ \item[] Do we have a better fit? $R^2$= 0.490
+ \end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{In practice}
+
+\begin{itemize}[<+->]
+ \item Linear and polynomial models are determined by parameters ($\beta_0, \beta_2, \cdots, \beta_p$)
+ \item[]  $$y = \beta_0 + \beta_1 x +  \beta_2 x^2 + \cdots + \beta_p x^p + \varepsilon$$
+ \item How to choose the degree $p$ ?
+ \item Collinearity of $x^p$ and $x^q$ for $ p \neq q$?
+ \item[] $\cdots$
+ \item[$\hookrightarrow$]  \textit{How does that relates to the learning exercise?}
+ \end{itemize}
+\end{frame}
+
+\section{K-NN}
+
+\begin{frame} % Cover slide
+\frametitle{ Nearest neighbors (k-NN)}
+
+\begin{itemize}[<+->]
+     \item Other methods more flexible
+       \item Nearest neighbors  (or k-NN)
+     \begin{itemize}[<+->]
+        \item[$\hookrightarrow$] The goal is to estimate $f(\cdot)$ not $\beta_s$!
+         \item[] \textit{Similar in spirit to "moving average" estimator}
+         \item[] $$ \widehat{f} (x_i) = \frac{1}{k} \sum_{\substack{j \in \{ k-nearest \\ \; neighbours \, of \, x_i \} }}  y_j$$
+         \item[] $k$ is the number of neighbors of $x_i$ taken into account in the estimation.
+         \item[]
+         \item[$\odot$] The method follows a very general idea:
+         \item[]  "\emph{Observations close in the $x$ dimension should be close in the $y$ dimension}"
+     \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ K-NN in practice}}
+\begin{center}
+\begin{itemize}
+   \only<1> {\includegraphics[width = 0.8\textwidth]{k-NN-0.png} \\ }
+   \only<2> {\includegraphics[width = 0.8\textwidth]{k-NN-1.png} \\ }
+   \only<3> {\includegraphics[width = 0.8\textwidth]{k-NN-2.png} \\ }
+   \only<4> {\includegraphics[width = 0.8\textwidth]{k-NN-3.png} \\ }
+   \only<5> {\includegraphics[width = 0.8\textwidth]{k-NN-4.png} \\ }
+   \only<6> {\includegraphics[width = 0.8\textwidth]{k-NN-5.png} \\ }
+   \only<7> {\includegraphics[width = 0.8\textwidth]{k-NN-6.png} \\ }
+\end{itemize}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ K-NN in practice: \textbf{Choosing k}}}
+\begin{itemize}
+\item[]
+   \only<1> {\includegraphics[width = 0.8\textwidth]{k-NN-over.png} \\ }
+   \only<2> {\includegraphics[width = 0.8\textwidth]{k-NN-under.png} \\ }
+   \only<3> {\includegraphics[width = 0.8\textwidth]{k-NN-well.png} \\ }
+   \only<4> {\includegraphics[width = 0.8\textwidth]{k-NN-over.png} \\ }
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ K-NN in practice: \textbf{Overfitting}}}
+\begin{itemize}[<+->]
+\item[] \includegraphics[width = 0.5\textwidth]{k-NN-over.png}
+\item[] Overfitting has many consequences
+\item The estimated curve follows the \textbf{data set} too closely
+\item The estimated curve follows the \textbf{errors} too closely
+\item The estimated function will not provide good estimates on \textbf{new observations}
+\end{itemize}
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Machine learning}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{Statistical \textit{vs} Machine Learning}}
+What is the goal?
+\pause
+\begin{itemize}[<+->]
+\item If the goal is to formalize a model, one may focus on testing statistical properties, significance, relationships, ...
+\item[] $\hookrightarrow $ this is the purpose of \textbf{Statistical Learning }
+\item If the goal is to predict, one may focus on prediction accuracy
+\item[] $\hookrightarrow $ this is the purpose of \textbf{Machine Learning }
+\item Many statistical learning methods are relevant and useful to estimate $f(\cdot)$
+\item In practice we'll use both tools to  "\emph{understand the data}"
+%\item $f(\cdot)$ can take continuous (regression) or discrete values (classification)
+%\item Choosing the best method is difficult
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ What learning means?}}
+The classical approach
+\begin{itemize}[<+->]
+\item So far, we have estimated $f(\cdot)$ on \textbf{the whole data set}
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets1.png}
+\item We have estimated $f(\cdot)$ by $\widehat f(\cdot)$  and minimized some cost function
+% such as the
+%$ MSE =  \frac{1}{n} \; \sum_ {i=1}^n \bigl( y_i - \widehat f(x_i) \bigr)^2 $
+\item The data serve \textbf{both} for estimating $f(\cdot)$ \textbf{and} computing the prediction error
+%\item This is prone to overfitting
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ What learning means?}}
+A different approach: \textit{resampling}
+\begin{itemize}[<+->]
+\item Our goal is  evaluate the prediction accuracy of $\widehat f(\cdot)$ on a new, \textbf{unseen}, data set
+\item Since we may not have \textbf{unseen} data, we will construct one
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets4.png}
+\item Compare $y_i$  with the prediction based on the validation set $x$s
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{Why different sets? }}
+Estimating parameters using predictions accuracy
+\begin{itemize}[<+->]
+\item When estimating $f(\cdot)$ on the whole data set, over-fitting may occur
+\item The validation set provides a good way to evaluate the prediction capabilities of a model and the prediction error on a new data set
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets4.png}
+\item Prediction accuracy (using $\widehat f(\cdot)$) is then evaluated on the validation set \textbf{only}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{Constructing training \& validation sets}}
+In practice, the validation set is not a block
+\begin{itemize}[<+->]
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets4.png}
+\item The validation set is constructed from a randomly drawn observations.
+\item[] \includegraphics[width = 0.8\textwidth]{ML-Sets5.png}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{\textit{Many} different sets!  }}
+Using resampling methods to  estimate the error on the prediction
+\pause
+\begin{itemize}[<+->]
+\item Cross validation is used to select $m$-(training-validation) sets from the original data set (here again randomly)
+\only<2> {\includegraphics[width = 0.8\textwidth]{CV-Sets1.png}}
+\only<3-4> {\includegraphics[width = 0.8\textwidth]{CV-Sets2.png}}
+ \item[]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{\textit{Many} different sets!  }}
+\textit{m-fold} Cross-Validation estimates the average prediction error on $m$ different(training-validation) sets
+\pause
+\begin{itemize}[<+->]
+\item For each ($training-validation$) set $j$, one can compute the $MSE_j$ since the true $y$s are known on the validation set!
+\item Cross Validation error is then:
+ $$ CV_{(m)}  =  \frac{1}{m} \; \sum_ {j=1}^m   MSE_j$$
+ \item $CV_{(m)}$ is a good estimate of the prediction error of the model
+ \item  $CV_{(m)} $  can serve to select and compare models 
+ \item[$\hookrightarrow$] Example: select  $k$ in $k$-NN regression
+ %\item In practice $m \in {5, \cdots, 10}$ shows good performances
+\end{itemize}
+\end{frame}
+
+
+
+\section{Wrap-up}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ Tasks for Machine Learning }}
+Machine Learning involves several tasks, some are time consuming
+\pause
+\begin{itemize}[<+->]
+    \item Data collection (not treated here)
+    \item Data organization (not treated here)
+    \item Data cleaning (not treated here)
+    \item Data visualization
+    \item Data analysis $ \leftarrow $ this is the core of this course
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{ Wrap-up }}
+\pause
+\begin{itemize}[<+->]
+%\item Machine Learning builds upon "classical" statistics
+\item To \textit{understand }the data, we use linear, polynomial, nonparametric models ($k$-NN) or other complex methods (including those for classification)
+\item More complex models $\nearrow$ accuracy, but $\rightarrow$ variability (variance) in the estimation
+\item  There is a unavoidable  \textbf{bias-variance} trade-off
+\item Theory helps understanding but not in choosing the right model
+\item The ($train + validation$) sets approach is central in machine learning% The only one that helps in practice
+\item[$\hookrightarrow$] In a machine learning framework, the efficiency of the prediction will guide the choices, not the statistical properties! % The only one that helps in practice
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Q\&A]}}
+\begin{center}
+\Large \textcolor{siap}{ Write your questions in the chat}
+\end{center}
+
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Next week]}}
+\pause
+\begin{itemize}[<+->]
+    \item Module 2: "Classification" (Examples of classifiers, Measures of fit, \emph{Logit} as a classifier)
+    \item Webinar on "Classification" Thursday, same time
+    \item Complete the activities before the webinar!
+    \item[] \begin{center}
+                \Large \textcolor{siap}{ Have a nice week!}
+            \end{center}
+\end{itemize}
+\end{frame}
+
+\end{document}
+\begin{frame} % Cover slide
+\frametitle{ }
+\pause
+ \begin{itemize}[<+->]
+  \item[]
+  \item
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%% Last Slide %%%%%%%%%%%%%%%%
+
+\begin{frame}[allowframebreaks]%in case more than 1 slide needed
+\frametitle{References}
+    {\footnotesize
+    %\bibliographystyle{authordate1}
+    \bibliographystyle{apalike}
+    \bibliography{../../../Visualisation/Visu}
+    }
+\end{frame}
+\end{document}
+
+%\bibliographystyle{authordate1}
+%\bibliography{c:/Chris/Visualisation/Visu}
+%\end{frame}

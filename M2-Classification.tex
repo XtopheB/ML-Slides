@@ -1,0 +1,670 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken.
+
+\documentclass[xcolor=x11names,compress, handhouts]{beamer}
+%% General document
+\usepackage{graphicx, subfig}
+%% Beamer Layout
+\useoutertheme[subsection=false,shadow]{miniframes}
+\useinnertheme{default}
+\usefonttheme{serif}
+\usepackage{palatino}
+
+%%%%%%% Mes Packages %%%%%%%%%%%%%%%%
+%\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{dsfont} % Pour indicatrice
+\usepackage{url}
+\usepackage{multirow}
+
+%remove the icons
+\setbeamertemplate{bibliography item}{}
+
+%remove line breaks
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+
+%% ------ MEs couleurs --------
+\definecolor{vert}{rgb}{0.1,0.7,0.2}
+\definecolor{brique}{rgb}{0.7,0.16,0.16}
+\definecolor{gris}{rgb}{0.7, 0.75, 0.71}
+\definecolor{twitterblue}{rgb}{0, 0.42, 0.58}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+\definecolor{siap}{RGB}{3,133, 168}
+
+
+%%%%%%%%%%%%%%%%% BEAMER PACKAGE %%%%%%%
+
+\setbeamerfont{title like}{shape=\scshape}
+\setbeamerfont{frametitle}{shape=\scshape}
+
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{alerted text}{fg=red}
+\setbeamercolor*{example text}{fg=black}
+\setbeamercolor*{structure}{fg=black}
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
+
+\renewcommand{\(}{\begin{columns}}
+\renewcommand{\)}{\end{columns}}
+\newcommand{\<}[1]{\begin{column}{#1}}
+\renewcommand{\>}{\end{column}}
+
+% Path for the graphs
+\graphicspath{{Graphics/}{../../../../Visualisation/Presentations/Graphics/}{../../Visualisation/Presentations/Graphics/}
+{c:/Gitmain/MLCourse/UNML/Module2/M2-1-SimpleClassification_files/figure-html/}{c:/GitMain/MLCourse/UNML/Module0/M0_files/figure-html/}
+}
+
+%remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+
+% Natbib for clean bibliography
+\usepackage[comma,authoryear]{natbib}
+
+\begin{document}
+%%% Title page %%%%%
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+
+\hspace{1cm}
+
+\color{brique}{\huge{Classification}}
+
+\hspace{2cm}
+\begin{center}
+
+\includegraphics[height=0.10\textwidth]{SIAP_logo_Big.png}
+
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%  ----------- Dataviz  Definition  -----------%%%
+
+\section{Introduction}
+
+\begin{frame} % Cover slide
+
+\frametitle{\textcolor{brique}{[ Classification ]}}
+What is a classification problem?
+\pause
+\begin{itemize}[<+->]
+  \item The goal  is to understand why an observation belongs to a certain category
+  \item  $y$  takes discrete values:  0/1, high school/primary school/no education; urban/rural
+  \item Some variables $x$s may explain why $y$ belongs to a particular category
+  \item[]
+  \item[] \begin{center}A \textbf{classifier} is a tool that provides a classification for $y$ using (\textit{or not}) additional information from other variables \end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Supervised \textit{vs} unsupervised Classification ]}}
+\pause
+\begin{itemize}[<+->]
+  \item In \textbf{supervised }classification, we \textbf{observe} the category for each observation
+  \item[] \textit{One may learn  and estimate the impact of other variables on that classification (\textit{e.g}. logit regression)}
+   \item In \textbf{unsupervised }classification, we \textbf{ignore} the category (if any) of each observation
+  \item[]  \textit{The goal is to classify observations from those variables (clustering) without having any information of what a category means.}
+  \item[]
+  \item We'll focus on \textbf{supervised }classification
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  An example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item You observe households that are either in \textit{Urban} or \textit{Rural} areas (colors) and one variable (feature): \textit{Education}.
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{univariatefig-1.png} \end{center}
+  \item A classifier determines the value of\textit{ Education} that separate "\textit{Rural}" from  "\textit{Urban}"
+  \item[] Typically  with a threshold rule:\\ \hspace{1cm} "if $x \geq t$  then  category is \textit{Urban}"
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  A 2-D example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item You observe households in \textit{Urban} or \textit{Rural} areas and \textbf{two} variables (features): \textit{Education} and \textit{Income}
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{bivariatefig-1.png} \end{center}
+  \item[]
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  A 2-D example ]}}
+\pause
+\begin{itemize}[<+->]
+   \item A classifier will determine a\textbf{ boundary} using both \textit{Education}  and \textit{Income} to separate "Rural" from "Urban"
+   \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{bivariatefig-1.png} \end{center}
+  \item The rule can be based on a linear relationship between \textit{Education}  and \textit{Income} or can be non linear.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classification:  A 2-D example ]}}
+\pause
+\begin{itemize}[<+->]
+  \item Example of a linear classifier
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{Logit_Frontier-1.png} \end{center}
+  \item The separation rule is  $ x'\beta \geq T_0$ \\ with $T_0$ a known threshold
+  \item[]\textit{e.g.} $\beta_0 + \beta_1 Education + \beta_2 Income \geq T_0  \Leftrightarrow Urban$
+
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classifiers examples]}}
+\pause
+\begin{itemize}[<+->]
+  \item Example of non-linear classifier
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{QLogit_Frontier-1.png} \end{center}
+  \item The rule that separated the two classes is non linear in the variables \textit{Education}  and \textit{Income}
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classifiers examples ]}}
+\pause
+\begin{itemize}[<+->]
+  \item Another non-linear example
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{PlotQDA-1.png} \end{center}
+  \item The boundary is  complex and uses \textit{Education}  and \textit{Income} features.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Classifiers examples ]}}
+\pause
+\begin{itemize}[<+->]
+  \item Other examples can be very non linear
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{PlotBayesK-1.png} \end{center}
+  \item It is hard to understand how the two classes  are built using \textit{Education}  and \textit{Income}
+\end{itemize}
+\end{frame}
+
+
+\section{Measures of Fit}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ How to select the right model?  ]}}
+\pause
+\begin{itemize}[<+->]
+  \item What is the goal?
+  \item[] Have the ``best`'' classification
+  \item[$\hookrightarrow$] Need for a criterion to determine what is a good classifier
+  \item Measures of fit in classification are different and specific
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Measures of fit in classification ]}}
+There are several popular measures of fit, differing in their spirit and their goal
+\pause
+\begin{itemize}[<+->]
+  \item Accuracy
+  \item Confusion matrix
+  \item Sensitivity  \&  Specificity
+  \item Kappa
+  \item[]$\cdots$
+  \item[] Each criterion answers to a different question
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Accuracy and Confusion Matrix]}}
+\begin{itemize}[<+->]
+  \item[] Accuracy corresponds to the probability of being "accurate"
+        $$
+        \Pr \left[ y_0  = \widehat{f}(x_0) \right]
+        $$
+    \item where $\widehat{f}(\cdot)$ is the classifier.
+    \item[$\hookrightarrow$] We want the maximum possible accuracy.
+    \item Equivalently, we may want to minimize the \textit{error rate} or \textit{misclassification rate}
+    $$
+    \Pr \left[ y_0  \neq \widehat{f}(x_0) \right]
+    $$
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Confusion Matrix \& Accuracy ]}}
+
+A classifier predicts in which class each observation should be:
+\pause
+\begin{itemize}[<+->]
+  \item[]
+    \begin{table}[]
+    \begin{tabular}{l|c|c|}
+                               & \multicolumn{2}{c|}{Observed (True)}                                                                                          \\ \hline
+    \multirow{2}{*}{Predicted} & \begin{tabular}[c]{@{}l@{}}TP\\ (True Positive)\end{tabular}  & \begin{tabular}[c]{@{}l@{}}FP\\ (False Positive)\end{tabular} \\ \cline{2-3}
+                               & \begin{tabular}[c]{@{}l@{}}FN\\ (False Negative)\end{tabular} & \begin{tabular}[c]{@{}l@{}}TN\\ (True Negative)\end{tabular}  \\ \hline
+    \end{tabular}
+    \caption{Confusion Matrix}
+    \end{table}
+
+  \item Accuracy is then the ratio:
+   $$ Acuracy = \frac{TP + TN}{ TP+TN+FP+FN} $$
+   $$
+ \; \; \;  =  \frac{ True Positives +  True Negatives}{N}
+ $$
+
+  \item  It is the proportion of accurate predictions
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Confusion Matrix  \& Accuracy]}}
+In practice, with a classifier we have:
+\begin{itemize}[<+->]
+  \item[]
+    \begin{table}[]
+    \begin{tabular}{l r|c|c|}
+
+                              & & \multicolumn{2}{c|}{Observed (True)}                                                                                          \\
+                              & &    Urban  &  Rural  \\  \hline
+    \multirow{2}{*}{Predicted}& Urban & \shortstack[c]{$87$ \\ \tiny{(TP)}}& \shortstack[c]{28 \\ \tiny{(FP)}} \\ \cline{2-4}
+                              & Rural &  \shortstack[c]{24 \\ \tiny{(FN)}}& \shortstack[c]{69 \\ \tiny{(TN)}} \\ \hline
+    \end{tabular}
+    \caption{Confusion Matrix}
+    \end{table}
+  \item Here \textit{Urban} is the "positive" class
+  \item Accuracy is then the ratio:
+   $$ Accuracy = \frac{87 + 69}{ 87 + 69 + 28 + 24} $$
+   $$
+ \; \; \;  =  \frac{156}{208} = 0.75
+ $$
+  \item  We have an accurate prediction in 75\% of the cases.
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Problem 1: Accuracy is one number ]}}
+Accuracy is not the panacea and may be misleading
+\begin{itemize}[<+->]
+    \item One may be more interested in \textbf{correctly} predicting a particular outcome!
+    \item[$\hookrightarrow$] This is often the case if the \textbf{cost} of being wrong differ
+    \item One may need other measures, focused on one particular outcome
+    \item Compute \textit{Sensitivity}  \&  \textit{Specificity } from the confusion matrix
+    \item They may go in different directions
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Sensitivity or \textit{True Positive Rate}]}}
+\begin{itemize}[<+->]
+  \item[]
+    \begin{table}[]
+    \begin{tabular}{l r|c|c|}
+
+                              & & \multicolumn{2}{c|}{Observed (True)}                                                                                          \\
+                              & &    Urban  &  Rural  \\  \hline
+    \multirow{2}{*}{Predicted}& Urban & \shortstack[c]{$87$ \\ \tiny{(TP)}}& \shortstack[c]{28 \\ \tiny{(FP)}} \\ \cline{2-4}
+                              & Rural &  \shortstack[c]{24 \\ \tiny{(FN)}}& \shortstack[c]{69 \\ \tiny{(TN)}} \\ \hline
+    \end{tabular}
+    \caption{Confusion Matrix}
+    \end{table}
+  \item \textit{Sensitivity} focuses on  "positives" (here \textit{Urban}), \textit{i.e.} on predicted positives \textit{vs} the observed positives
+   $$ Sensitivity = \frac{TP}{TP + FN} $$
+   $$
+          \hspace{2.5cm}=  \frac{87}{87+24} = 0.78
+ $$
+  \item On \textit{Urban}, we correctly predict  in 78\% of the cases
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Specificity or \textit{True Negative Rate}]}}
+\begin{itemize}[<+->]
+  \item[]
+    \begin{table}[]
+    \begin{tabular}{l r|c|c|}
+
+                              & & \multicolumn{2}{c|}{Observed (True)}                                                                                          \\
+                              & &    Urban  &  Rural  \\  \hline
+    \multirow{2}{*}{Predicted}& Urban & \shortstack[c]{$87$ \\ \tiny{(TP)}}& \shortstack[c]{28 \\ \tiny{(FP)}} \\ \cline{2-4}
+                              & Rural &  \shortstack[c]{24 \\ \tiny{(FN)}}& \shortstack[c]{69 \\ \tiny{(TN)}} \\ \hline
+    \end{tabular}
+    \caption{Confusion Matrix}
+    \end{table}
+  \item \textit{Sensitivity} focuses on  negatives (\textit{Rural}), \textit{i.e.} on predicted negatives \textit{vs} the observed negatives
+   $$ Specificity = \frac{TN}{TN + FP} $$
+   $$
+ \; \; \;  =  \frac{69}{69+28} = 0.71
+ $$
+  \item On \textit{Rural}, we predict correctly in \textbf{only} 71\% of the cases
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Problem 2: Imbalanced outcomes]}}
+Imagine you observe much more Urban than Rural
+\begin{itemize}[<+->]
+ \item[]
+    \begin{table}[]
+    \begin{tabular}{|c|c|}
+
+     \multicolumn{2}{c}{Observed (True)}                                                                                          \\
+      Urban  &  Rural  \\  \hline
+      95     & 5       \\  \hline
+    \end{tabular}
+    \end{table}
+  \item A "\textit{stupid}" classifier predicting only \textit{Urban} $\cdots$
+  \item[]
+    \begin{table}[]
+    \begin{tabular}{l r|c|c|}
+
+                              & & \multicolumn{2}{c|}{Observed (True)}                                                                                          \\
+                              & &    Urban  &  Rural  \\  \hline
+    \multirow{2}{*}{Predicted}& Urban & \shortstack[c]{95 \\ \tiny{(TP)}}& \shortstack[c]{5 \\ \tiny{(FP)}} \\ \cline{2-4}
+                              & Rural &  \shortstack[c]{0 \\ \tiny{(FN)}}& \shortstack[c]{0 \\ \tiny{(TN)}} \\ \hline
+    \end{tabular}
+    \end{table}
+  \item[] $\cdots$ would have a very good \textit{Accuracy} and \textit{Sensitivity}
+  \item[] Accuracy = (TP + TN)/ 100 = 95 \%
+  \item[] Sensitivity = TP/(TP + FN) = 95/95 = 100 \%
+\end{itemize}
+\end{frame}
+
+\begin{frame} % over slide
+\frametitle{\textcolor{brique}{[ The Kappa ($\kappa$) index ]}}
+\emph{Kappa} ($\kappa$) is defined to measure the accuracy with imbalanced classes
+\begin{itemize}[<+->]
+  \item[] Its formal definition is given by
+  $$ \kappa = \frac{P_o - P_e}{1 - P_e}  $$
+  \item[]$P_o$ is the \textbf{current classifier accuracy} which is compared here with the accuracy of an uniformed classifier $P_e$
+  \item[] $P_e$ is the \textbf{accuracy of an uniformed classifier} that would operate purely by chance, using no information.
+  \item[NB:] $P_o$ is simple accuracy while $P_e$  is more complex to compute.
+  \item  The larger $\kappa $ is, the better the model for a given distribution of classes in a data set
+  \end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Quiz time]}}
+\pause
+\begin{itemize}[<+->]
+  \item[]
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Takeaways]}}
+\begin{itemize}[<+->]
+  \item In classification, the \textbf{Confusion matrix} is important
+ \item Many adjustment measures:  \textbf{accuracy}, \textbf{sensitivity} and \textbf{specificity}.
+    \begin{itemize}[<+->]
+      \item \textit{Sensitivity} is accuracy restricted to the positives.
+      \item \textit{Specificity} is accuracy restricted to the negatives.
+   \end{itemize}
+ \item When  outcome is \textit{imbalanced}, one may use \textbf{kappa} has a better measure for accuracy.
+  \item[] Which measure you should consider depends on the context and your goal.
+\end{itemize}
+\end{frame}
+
+
+\section{Logit}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Logit as You know it ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item[] $y$  is discrete, so no $direct$ linear relationship between $y$ and the explanatory variables $x$ ( \textit{i.e. Education, Income})
+  \item Logit estimates the probabilities $\pi$ ($\in [0,1]$)  $$\pi = Probablity[y= 1]$$
+  \item The definition of the logit model is:
+  $$
+  \pi = Pr \left( y = 1\right) = F( x'\beta) = \frac{1}{1+\exp(-x'\beta)}
+  $$
+  \item This can be transformed into:
+  $$
+  \pi = \frac{exp(x'\beta)}{1+ exp(x'\beta)}
+  $$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Logit as You \textbf{Don't} know it ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item[] From this equation
+  $$
+  \pi = \frac{exp(x'\beta)}{1+ exp(x'\beta)}
+  $$
+  \item[] one gets  the \textbf{linear} nature of the logit:
+   $$
+  log(\frac{\pi}{1 - \pi}) = x'\beta
+  $$
+  \item[]where $\frac{\pi}{1 - \pi}$ is the odd ratio $\in [0,\infty]$  with values indicating high or low probability that $y=1$
+  \item[$\hookrightarrow$] "\emph{The logit models log of odd ratios as linear in x}"
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Logit as a classifier ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item Once estimated, $\widehat \pi_i$ provide a simple rule for classification
+  \item[] $$
+   \widehat \pi_i > t_0  \Leftrightarrow \widehat y_i = 1
+  $$
+    \item[] Where $t_0$ is a threshold probability, by default $1/2$.
+  \item If  $t_0 = 1/2$ (default), then the rule is equivalent to:
+   $$
+   x'_i \widehat \beta > 0  \Leftrightarrow \widehat y_i = 1
+  $$
+  \item If  $t_0 \neq 1/2$:
+   $$
+   x'_i \widehat \beta > T_0  \Leftrightarrow \widehat y_i = 1
+  $$
+  \item[$\hookrightarrow$] The logit classifier depends on the linear combination of the $x$'s
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Importance of the threshold ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item The rule $ x'\beta \geq T_0$ defines the partition of the space
+  \item[] \begin{center}\includegraphics[width = 0.5\textwidth]{Logit_Frontier-1.png} \end{center}
+  \item This partition is sensitive to the choice of the threshold $T_0$ (and the $t_0$)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Importance of the threshold ]}}
+ \hfill \includegraphics[width = 0.2\textwidth]{Logit_Frontier-1.png}
+\pause
+ \begin{itemize}[<+->]
+  \item Changing $t_0$ will  change the predictions \&  the classification
+  \item[] A higher $t_0$ will allocate less observations to the $y=1$ category (Urban)
+  \item[] A lower $t_0$ will allocate more observations to the $y=1$ category
+  \item The choice of $t_o$ should be done according to the data and observed classes repartition
+  \item \textit{Specificity} and \textit{Sensitivity} are affected by $t_0$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[The ROC Curve ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item We want the \textit{Specificity} and \textit{Sensitivity} to be both \textbf{maximized} (ideally both would be 1)
+  \item The ROC curve help visualize the best choice
+  \item The ROC plots both Sensitivity and Specificity values for different thresholds
+  \item[] \textit{Be careful of the axes }
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[The ROC Curve]}}
+\pause
+ \begin{itemize}[<+->]
+  \item[] The ROC represents values of 1- Specificity =  FPR  \textit{vs} Sensitivity =  TPR for many values of the threshold $t_0$
+  \item[] \begin{center}\includegraphics[width = 0.6\textwidth]{ROCfig-1.png} \end{center}
+  \item \textit{(sometimes  x is sensitivity  with inverted x-axis)}
+\end{itemize}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[The ROC Curve: How to read?]}}
+\pause
+ \begin{itemize}[<+->]
+  \item[] Changing $t_0$ changes the classification \hfill \includegraphics[width = 0.2\textwidth]{Logit_Frontier-1.png}
+  \item  Optimally, the curve should touch top-left corner
+  \item[] \begin{center}\includegraphics[width = 0.6\textwidth]{ROCfigBest-1.png} \end{center}
+  \item If $t_0  \nearrow $,  more cases  classified as \textit{Negatives}, less \textit{Positives}
+  \item If $t_0  \nearrow $,   specificity  $\nearrow $ and sensitivity $\searrow$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[AUC as a measure of fit]}}
+\pause
+ \begin{itemize}[<+->]
+  \item[] \emph{A model that works well, whatever the threshold is certainly desirable}
+  \item  Using the AUC  is also a measure of fit of a model
+  \item[] \begin{center}\includegraphics[width = 0.6\textwidth]{AUCfig-1.png} \end{center}
+  \item The greater the area, the better the model
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Comparing the measures]}}
+\pause
+ \begin{itemize}[<+->]
+  \item We have several measures at hand
+  \item  We should evaluate those models on their predictive performance on a new "\textit{unseen}" data set
+  \item[$\hookrightarrow$] This is what Cross-Validation can do
+   \item[]\includegraphics[width = 0.7\textwidth]{CV-Sets2.png}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ Comparing the measures]}}
+\pause
+ \begin{itemize}[<+->]
+  \item For any model, CV gives several classifications
+  \item  All the criteria  derive from the confusion matrix
+  \item[$\hookrightarrow$] Examine them all!
+   \item[]\includegraphics[width = 0.7\textwidth]{CVAUCfig-1.png}
+\end{itemize}
+\end{frame}
+
+
+\section{Best classifier}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[ How to chose the best model? ]}}
+\pause
+ \begin{itemize}[<+->]
+  \item We have several criteria for one model
+  \item  We should again  evaluate the classifier based  on   "\textit{unseen}" data set
+  \item[$\hookrightarrow$] Run Cross-Validation an all!
+   \item[]\includegraphics[width = 0.3\textwidth]{modelsperf-1.png} \includegraphics[width = 0.3\textwidth]{modelsperf-2.png} \includegraphics[width = 0.3\textwidth]{modelsperf-3.png} \\
+   \includegraphics[width = 0.3\textwidth]{modelsperf-4.png} \includegraphics[width = 0.3\textwidth]{modelsperf-5.png}
+\end{itemize}
+\end{frame}
+
+%\section{wrap-up}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Quiz time]}}
+\pause
+\begin{itemize}[<+->]
+  \item[]
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Takeaways]}}
+\begin{itemize}[<+->]
+\item In classification, the \textbf{Confusion matrix} is important
+ \item Many adjustment measures:  \textbf{accuracy}, \textbf{sensitivity} and \textbf{specificity}.
+    \begin{itemize}[<+->]
+      \item \textit{Sensitivity} is accuracy restricted to the positives.
+      \item \textit{Specificity} is accuracy restricted to the negatives.
+   \end{itemize}
+ \item When  outcome is \textit{imbalanced}, one may use \textbf{kappa} has a better measure for accuracy.
+  \item[] Which measure you should consider depends on the context and your goal.
+ \item \textbf{Logit} is a benchmark parametric model for classification
+ \item[] One may use the \textbf{ROC} to change the threshold parameter
+ %\item[] \textit{(don't forget to scale explanatory variables) }.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Takeaways]}}
+\begin{itemize}[<+->]
+  \item Use Training-Validation set to \textbf{select} parameters within a model
+  \item Use Training-Validation set to \textbf{compare} models on the same criteria
+  \item Several criteria / measures of fit / cost functions are available
+  \item Time is the limit...
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame} % Cover slide
+\frametitle{ }
+\pause
+ \begin{itemize}[<+->]
+  \item[]
+  \item
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%% Last Slide %%%%%%%%%%%%%%%%
+
+\begin{frame}[allowframebreaks]%in case more than 1 slide needed
+\frametitle{References}
+    {\footnotesize
+    %\bibliographystyle{authordate1}
+    \bibliographystyle{apalike}
+    \bibliography{../../../Visualisation/Visu}
+    }
+\end{frame}
+\end{document}
+
+%\bibliographystyle{authordate1}
+%\bibliography{c:/Chris/Visualisation/Visu}
+%\end{frame}

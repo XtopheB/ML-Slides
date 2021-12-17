@@ -1,0 +1,236 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken.
+
+\documentclass[xcolor=x11names,compress, aspectratio=169]{beamer}
+%\documentclass[xcolor=x11names,compress, handhouts, aspectratio=169]{beamer}
+%% General document
+\usepackage{graphicx, subfig}
+%% Beamer Layout
+\useoutertheme[subsection=false,shadow]{miniframes}
+\useinnertheme{default}
+\usefonttheme{serif}
+\usepackage{palatino}
+
+%%%%%%% Mes Packages %%%%%%%%%%%%%%%%
+%\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{dsfont} % Pour indicatrice
+\usepackage{url}
+\usepackage{multirow}
+%remove the icon
+\setbeamertemplate{bibliography item}{}
+
+%remove line breaks
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+
+%% ------ MEs couleurs --------
+\definecolor{vert}{rgb}{0.1,0.7,0.2}
+\definecolor{brique}{rgb}{0.7,0.16,0.16}
+\definecolor{gris}{rgb}{0.7, 0.75, 0.71}
+\definecolor{twitterblue}{rgb}{0, 0.42, 0.58}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+\definecolor{siap}{RGB}{3,133, 200}
+
+
+%%%%%%%%%%%%%%%%% BEAMER PACKAGE %%%%%%%
+
+
+\setbeamercolor{itemize item}{fg=siap}
+%\setbeamercolor{itemize subitem}{fg=blue}
+%\setbeamercolor{itemize subsubitem}{fg=cyan}
+
+
+\setbeamerfont{title like}{shape=\scshape}
+\setbeamerfont{frametitle}{shape=\scshape}
+
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{alerted text}{fg=siap}
+\setbeamercolor*{example text}{fg=black}
+\setbeamercolor*{structure}{fg=black}
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
+
+\renewcommand{\(}{\begin{columns}}
+\renewcommand{\)}{\end{columns}}
+\newcommand{\<}[1]{\begin{column}{#1}}
+\renewcommand{\>}{\end{column}}
+
+% Path for the graphs
+\graphicspath{{Graphics/}{../../../../Visualisation/Presentations/Graphics/}
+{../../Visualisation/Presentations/Graphics/}
+{c:/Gitmain/MLCourse/UNML/Module0/M0_files/figure-html/}
+{c:/Gitmain/MLCourse/UNML/Module4/M4-0-SimpleTrees_files/figure-html/}
+{c:/Gitmain/MLCourse/UNML/Module4/M4-1-DecisionTrees_files/figure-html/}
+{c:/Gitmain/MLCourse/UNML/Module2/M2-1-SimpleClassification_files/figure-html/}
+{c:/Gitmain/MLCourse/UNML/Module4/M4-2-RandomForest_files/figure-html/}
+}
+
+%remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+
+% Natbib for clean bibliography
+\usepackage[comma,authoryear]{natbib}
+
+\begin{document}
+
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+\vspace{0.5cm}
+
+{\huge\textcolor{brique}{Fifth (and last) Live Lecture (Webinar) \\
+\vspace{0.2cm}
+Starts in \textbf{15} minutes\\
+}}
+
+\vspace{0.5cm}
+\begin{center}
+%\textcolor{siap}{\textit{Christophe Bontemps,} UN  SIAP\\ }
+\vspace{1cm}
+
+\includegraphics[height=0.1\textwidth]{SIAP_logo_Big.png}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+\vspace{0.5cm}
+
+{\huge\textcolor{brique}{Fifth (and last) Live Lecture (Webinar) \\
+\vspace{0.2cm}
+Starts in \textbf{10} minutes\\
+}}
+
+\vspace{0.5cm}
+\begin{center}
+%\textcolor{siap}{\textit{Christophe Bontemps,} UN  SIAP\\ }
+\vspace{1cm}
+
+\includegraphics[height=0.1\textwidth]{SIAP_logo_Big.png}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+\vspace{0.5cm}
+
+{\huge\textcolor{brique}{Fifth (and last) Live Lecture (Webinar) \\
+\vspace{0.2cm}
+Starts in \textbf{5} minutes\\
+}}
+
+\vspace{0.5cm}
+\begin{center}
+%\textcolor{siap}{\textit{Christophe Bontemps,} UN  SIAP\\ }
+\vspace{1cm}
+
+\includegraphics[height=0.1\textwidth]{SIAP_logo_Big.png}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Title page %%%%%
+\begin{frame}
+\Large{ \color{siap}{Machine Learning for Official Statistics and SDGs}}
+
+\hspace{1cm}
+
+\color{brique}{\huge{Ethical Considerations in the Use of Machine Learning for Research and Statistics\\
+\vspace{0.5cm}
+\textbf{Alice Toms}, UK Statistics Authority
+
+}}
+
+\hspace{2cm}
+\begin{center}
+
+\includegraphics[height=0.10\textwidth]{SIAP_logo_Big.png}
+
+\end{center}
+\end{frame}
+
+
+%%%% REMINDERS %%%%%%%%
+
+%\begin{frame} % Cover slide
+%\frametitle{\textcolor{brique}{[-  \textbf{Reminder} -]}}
+%\begin{itemize}[<+-|alert@+>]
+%   %\item Mute yourself \textcolor{brique}{always}!
+%   \item The lecture is recorded
+%   \item Ask questions in the chat
+%  % \item \textbf{Participate}: Answer \textcolor{brique}{quickly} to the polls...
+%\end{itemize}
+%\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[-  \textbf{Agenda} -]}}
+\begin{itemize}[<+-|alert@+>]
+   \item Introduction
+   \item Lecture "\textit{Ethical Considerations in the use of machine learning for research and statistics}"
+\textbf{Alice Toms}, UK Statistics Authority
+   \item Q\&A
+   \item[] \begin{center} \textcolor{brique}{\Large \textbf{Group Picture}} \end{center}
+   \item End of the course and certificates
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Q\&A]}}
+\begin{center}
+\Large \textcolor{siap}{ Write your questions in the chat}
+\end{center}
+\end{frame}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Agenda]}}
+\pause
+\begin{itemize}[<+->]
+    \item Last Module \#6: "\textit{Real-World}" Machine Learning is open
+    \item The personal data-based ML  project is quite a success (in Module 4)
+    \item Enjoy the activities proposed  and complete the test \\
+    \centering{\textbf{before Friday 24 December}}
+    \item Certificates available until the end of the course: \textbf{Friday 31 December}
+    \item Huge thanks to all participants and to Alice Toms
+    \item This course benefited from the work of the SIAP's team:\\
+     Ni Thein, Shuji Fukuyama, Akiyo Shibuya \& Patrick Jonsson (intern)
+    \item[] \begin{center} \textcolor{brique}{\Large \textbf{Group Picture}} \end{center}
+    \item[] \begin{center}
+                \Large \textcolor{siap}{Wishing you a fruitful end of the ML course! \\ Hope to see you soon for other courses on the SIAP's}
+            \end{center}
+\end{itemize}
+\end{frame}
+
+\end{document}
+\begin{frame} % Cover slide
+\frametitle{ }
+\pause
+ \begin{itemize}[<+->]
+  \item[]
+  \item
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%% Last Slide %%%%%%%%%%%%%%%%
+
+\begin{frame}[allowframebreaks]%in case more than 1 slide needed
+\frametitle{References}
+    {\footnotesize
+    %\bibliographystyle{authordate1}
+    \bibliographystyle{apalike}
+    \bibliography{../../../Visualisation/Visu}
+    }
+\end{frame}
+\end{document}
+
+%\bibliographystyle{authordate1}
+%\bibliography{c:/Chris/Visualisation/Visu}
+%\end{frame}

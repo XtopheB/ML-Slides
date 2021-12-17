@@ -94,12 +94,13 @@
 \begin{frame} % Cover slide
 
 \frametitle{\textcolor{brique}{[ Decision Trees ]}}
-\textit{Decision Trees} are methods used for classification or regression analysis. $\hookrightarrow$ Focus on classification\\
-\begin{center} \includegraphics[width = 0.5\textwidth]{FullTree.png} \end{center}
+\textit{Trees} are method for classification or regression analysis.\\
+ $\hookrightarrow$ Focus on classification\\
+\begin{center} \includegraphics[width = 0.5\textwidth]{rparttree-1.png} \end{center}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
   \item Trees split the space into non-overlapping spaces
-  \item Used to assign/predict a \textit{class} following conditions 
+  \item Used to assign/predict a \textit{class} following conditions
   \item Optimally, final classification is homogenous
 \end{itemize}
 \end{frame}
@@ -108,10 +109,10 @@
 
 \begin{frame} % Cover slide
 \frametitle{\textcolor{brique}{[ What's in a tree? ]}}
-Trees have a very simple structure and are easy to understand: 
-\begin{center} \includegraphics[width = 0.6\textwidth]{FullTree.png} \end{center}
+Trees have a very simple structure and are easy to understand:
+\begin{center} \includegraphics[width = 0.6\textwidth]{rparttree-1.png} \end{center}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
   \item[] Trees have:
   \begin{itemize}[<+->]
     \item \textbf{Nodes} where splitting decisions are done
@@ -122,15 +123,15 @@ Trees have a very simple structure and are easy to understand:
 \end{frame}
 
 
-\begin{frame} 
-\frametitle{\textcolor{brique}{[ How to construct a tree? ]}}
-
-\begin{center} \includegraphics[width = 0.6\textwidth]{FullTree.png} \end{center}
+\begin{frame}
+\frametitle{\textcolor{brique}{[ What's in a tree? ]}}
+How to build a tree?
+\begin{center} \includegraphics[width = 0.6\textwidth]{rparttree-1.png} \end{center}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
     \item Trees are based on recursive binary splits
-    \item Each node is a condition on a variable, based on a threshold. 
-    \item Each node separates the observations in two sets 
+    \item Each node uses a threshold on a variable
+    \item Each node separates the observations in two sets
 \end{itemize}
 \end{frame}
 
@@ -141,38 +142,40 @@ Trees have a very simple structure and are easy to understand:
 \frametitle{\textcolor{brique}{[ Example on a simple tree ]}}
 Let us see how this tree is constructed:\\
 \includegraphics[width = 0.9\textwidth]{rparttree-1.png} \\
-4 nodes leading to final leaves $\hookrightarrow$  Depth = 5 
+4 nodes leading to final leaves $\hookrightarrow$  Depth = 5
 \end{frame}
 
 \begin{frame}
 \frametitle{\textcolor{brique}{[ Example on a simple tree ]}}
-The problem is a 2D space: Education and Income and a classification in Urban vs Rural\\
+The problem is a 2D space\\
 \includegraphics[width = 0.9\textwidth]{Step0-1.png}
 \end{frame}
 
 \begin{frame} % Cover slide
 \frametitle{\textcolor{brique}{[ Example on a simple tree ]}}
-\hfill \includegraphics[width = 0.3\textwidth]{rparttree-1.png} 
+\hfill \includegraphics[width = 0.3\textwidth]{rparttree-1.png}
 \begin{itemize}
 \item[]
-  \only<2> {\includegraphics[width = 0.8\textwidth]{Step1-1.png} \\ }
-  \only<2> {First the boundary decision line}
-  \only<3> { \includegraphics[width = 0.8\textwidth]{Step1-2.png} \\ }
-  \only<3> {The space below the line is classified as  rural}
-  \only<4> {\includegraphics[width = 0.8\textwidth]{Step2-1.png} \\ }
-  \only<4> {Second boundary decision line}
-  \only<5> {\includegraphics[width = 0.8\textwidth]{Step2-2.png} \\ }
-  \only<5> {The space on the left of the line is classified as  rural}
-  \only<6> {\includegraphics[width = 0.8\textwidth]{Step3-1.png} \\ }
-  \only<6> {Third boundary decision line}
-  \only<7> {\includegraphics[width = 0.8\textwidth]{Step3-2.png} \\ }
-  \only<7> {The space on the right of the line is classified as  Urban}
-  \only<8> {\includegraphics[width = 0.8\textwidth]{Step4-1.png} \\ }
-  \only<8> {Fourth boundary decision line}
-  \only<9> {\includegraphics[width = 0.8\textwidth]{Step4-2.png} \\ }
-  \only<9> {The space above the line is classified as  Urban}
-  \only<10> {\includegraphics[width = 0.8\textwidth]{Step4-3.png} \\ }
-  \only<10> {Finally, the remaining space is classified as rural}
+   \only<2> {\includegraphics[width = 0.8\textwidth]{Step0-1.png} \\ }
+   \only<2> {How to split the (Education,Income) space?}
+   \only<3> {\includegraphics[width = 0.8\textwidth]{Step1-1.png} \\ }
+   \only<3> {The first boundary decision line}
+   \only<4> { \includegraphics[width = 0.8\textwidth]{Step1-2.png} \\ }
+   \only<4> {The space below the line is classified as  rural}
+   \only<5> {\includegraphics[width = 0.8\textwidth]{Step2-1.png} \\ }
+   \only<5> {Second boundary decision line}
+   \only<6> {\includegraphics[width = 0.8\textwidth]{Step2-2.png} \\ }
+   \only<6> {The space on the left of the line is classified as  rural}
+   \only<7> {\includegraphics[width = 0.8\textwidth]{Step3-1.png} \\ }
+   \only<7> {Third boundary decision line}
+   \only<8> {\includegraphics[width = 0.8\textwidth]{Step3-2.png} \\ }
+   \only<8> {The space on the right of the line is classified as  Urban}
+   \only<9> {\includegraphics[width = 0.8\textwidth]{Step4-1.png} \\ }
+   \only<9> {Fourth boundary decision line}
+   \only<10>{\includegraphics[width = 0.8\textwidth]{Step4-2.png} \\ }
+   \only<10>{The space above the line is classified as  Urban}
+   \only<11>{\includegraphics[width = 0.8\textwidth]{Step4-3.png} \\ }
+   \only<11>{Finally, the remaining space is classified as rural}
 \end{itemize}
 \end{frame}
 
@@ -180,7 +183,7 @@ The problem is a 2D space: Education and Income and a classification in Urban vs
 
 \begin{frame}
 \frametitle{\textcolor{brique}{[ How to build a tree? ]}}
- \hfill \includegraphics[width = 0.2\textwidth]{FullTree.png} \\
+ \hfill \includegraphics[width = 0.2\textwidth]{rparttree-1.png} \\
 
 We need several tools to build a tree:
 \pause
@@ -210,7 +213,9 @@ $$
   D_{\kappa} =   - \sum_{m=1}^M  \widehat{p}_{m \kappa}  \log
   \widehat{p}_{m \kappa}
   $$
-  \item[Note:] If in the each node there is only one class   represented, then $D_{\kappa}$ is zero.
+  \item We expect that there is an Information gain from the splitting
+  $$Information\;Gain = Entropy_{\; Before} - Entropy_{\; After}$$
+  %\item[Note:] If in the each node there is only one class  represented, then $D_{\kappa}$ is zero.
 
 \end{itemize}
 \end{frame}
@@ -254,7 +259,7 @@ $$
   \only<17> {Few "Rural" are classified as  Urban }
   \only<18> {\includegraphics[width = 0.8\textwidth]{Step4-5.png} \\ }
   \only<18> {Many "Urban" are classified as Rural }
-  
+
 \end{itemize}
 \end{frame}
 
@@ -263,15 +268,16 @@ $$
 The construction is based on recursive binary splits
 \pause
 \begin{itemize}[<+->]
-    \item The goal is to increase the quality of the classification at the each stage 
+    \item The goal is to increase the quality of the classification at the each stage
     \item[$\hookrightarrow$] decrease the \textit{impurity} at each node
-    \item The outcome is "one" tree, not the perfect one 
+    \item The outcome is "one" tree, not the perfect one
     \item  There are many parameters that can be adjusted
     \begin{itemize}[<+->]
         \item The maximum \textit{depth} of the tree
         \item The number of final leaves
         \item The impurity balance between classes
-        \item The \textit{complexity parameter}   
+        \item The \textit{complexity parameter}
+        \item ...
     \end{itemize}
 \end{itemize}
 \end{frame}
@@ -279,35 +285,120 @@ The construction is based on recursive binary splits
 \section{Tuning a Tree}
 
 \begin{frame}
-\frametitle{\textcolor{brique}{[ Trees can be overcomplicated ]}}
+\frametitle{\textcolor{brique}{[ Trees can be complex ]}}
 Trees can decompose the space in very specific zones.\\
- Example with  the full set of variables\\
- 
+ $\hookrightarrow$ Example with  the full set of variables\\
+
 \includegraphics[width = 0.9\textwidth]{Originaltree-1.png}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{\textcolor{brique}{[ How to tune a tree? ]}}
-As usual, we'll base our search on Cross validation
+\frametitle{\textcolor{brique}{[ Selecting the \textbf{Depth} of a tree ]}}
+Using CV, we can select the \textit{maximum depth} parameter
 \pause
 \begin{itemize}[<+->]
-    \item Select the hyperparameter to optimize
-    \item Use cross-validation to train the model for several values of the hyperparameter
-    \item Select the "best" value based on the criteria
-    \item For classification, accuracy or kappa (averaged over CV sets)  
-    \item Evaluate the performance and some other criteria of the best solution
+    \item[] \includegraphics[width = 0.9\textwidth]{depthtune-1.png}
 \end{itemize}
 \end{frame}
 
-% TUNING on Depth 
 
-% Tuning on Model complexity 
-% Def of Model complexity
-% Pruning a tree
-% Wrap up :  Trees are not robust 
-%         : Sensitive to few changes 
-%  Better to ask to several persons and find common patterns --> RF
+\begin{frame}
+\frametitle{\textcolor{brique}{[ Selecting the \textbf{Depth} of a tree ]}}
+\pause
+\begin{itemize}
+\item[] The resulting tree
+  \only<2> {\includegraphics[width = 0.8\textwidth]{depthtree-1.png} \\ }
+  \only<2> {Tree with optimal depth}
+  \only<3> {\includegraphics[width = 0.8\textwidth]{depthVIF-1.png} \\ }
+  \only<3> {Feature importance (also confusion matrix, kappa, etc..)}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ Selecting the \textbf{Complexity} of a tree ]}}
+The complexity of a tree is a parameter $C_p$ governing the trade-off between tree size $|T|$ and its overall
+accuracy $D(T)$:
+$$
+D_{C_p}(T) = D(T) + C_p \cdot |T|
+$$
+\begin{itemize}[<+->]
+    \item  $D(T) =  \sum_{\kappa=1}^{K} D_{\kappa}$:  the total \emph{impurity} of the tree
+    \item $|T|$ is the number of terminal nodes of the tree
+    \item[$\hookrightarrow$] A model with $C_p$ = 0 will impose no constrains
+    \item[$\hookrightarrow$] A value of $C_p = 1$ only \textbf{one} terminal (and initial) node.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ Selecting the \textbf{Complexity} of a tree ]}}
+\pause
+\begin{itemize}
+\item[] The result:
+   \only<2> {\includegraphics[width = 0.8\textwidth]{Cptune-1.png} \\ }
+   \only<2> {Grid search}
+   \only<3> {\includegraphics[width = 0.8\textwidth]{Cptree-1.png} \\ }
+   \only<3> {Final tree with optimal complexity parameter}
+  \only<4> {\includegraphics[width = 0.8\textwidth]{depthVIF-1.png} \\ }
+  \only<4> {Feature importance (also confusion matrix, kappa, etc..)}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ How to \textbf{prune} a tree? ]}}
+One can also \textit{prune} a tree
+\pause
+\begin{enumerate}[<+->]
+    \item Final trees may be too large and too complex
+    \item[$\hookrightarrow$] Risk of overfitting
+    \item Pruning techniques use the same criteria on each leave
+    \item[$\hookrightarrow$] Remove least important nodes
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{\textcolor{brique}{[ Pruned tree ]}}
+After "\textit{pruning}":
+\pause
+\begin{itemize}[<+->]
+    \item[] \includegraphics[width = 0.9\textwidth]{prunedtree-1.png}
+    \item[$\hookrightarrow$] Easier to interpret \& no loss of accuracy
+\end{itemize}
+\end{frame}
+
+                  
+
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Quiz time]}}
+\pause
+\begin{itemize}[<+->]
+  \item[]
+\end{itemize}
+\end{frame}
+
+\section{Wrap-up}
+
+\begin{frame} % Cover slide
+\frametitle{\textcolor{brique}{[Takeaways]}}
+\begin{itemize}[<+->]
+\item Trees are simple and easy to interpret
+\item Each node is a split based on a threshold
+\item Splits are determined to maximize some measure of accuracy in each strata of the predictors' space
+\item Regression trees apply the same logic, with different criteria and values
+\item One can select the depth of a tree or its complexity and prune it
+\item Trees are very specific, not robust and prone to overfitting
+\item[$\hookrightarrow$] There are powerful methods using many trees...
+
+\end{itemize}
+\end{frame}
+
+
+
 
 
 
